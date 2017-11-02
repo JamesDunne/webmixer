@@ -8,34 +8,87 @@
     <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
 </audio>
 <script>
+    class Track {
+        constructor(opts) {
+            this.name = opts.name;
+            this.channels = opts.channels;
+            this._pan = opts.pan || 0;
+            this._level = opts.level || 0;
+        }
+
+        createNodes(ac) {
+            // Create default nodes:
+            this.soloMuteNode = ac.createGain();
+            this.muteNode = ac.createGain();
+            this.panLeftNode = ac.createGain();
+            this.panRightNode = ac.createGain();
+            this.postPanNode = ac.createChannelMerger(2);
+            this.gainNode = ac.createGain();
+
+            // Connect nodes:
+            this.soloMuteNode.connect(this.muteNode);
+            this.muteNode.connect(this.panLeftNode);
+            this.muteNode.connect(this.panRightNode);
+            this.panLeftNode.connect(this.postPanNode, 0, 0);
+            this.panRightNode.connect(this.postPanNode, 0, 1);
+            this.postPanNode.connect(this.gainNode);
+        }
+
+        get inputNode() {
+            return this.soloMuteNode;
+        }
+
+        get outputNode() {
+            return this.gainNode;
+        }
+
+        get pan() {
+            return this._pan;
+        }
+        set pan(value) {
+            this._pan = value;
+            this.panLeftNode.gain.value = (value * -0.5) + 0.5;
+            this.panRightNode.gain.value = (value * 0.5) + 0.5;
+        }
+
+        get level() {
+            return this._level;
+        }
+        set level(value) {
+            this._level = value;
+            this.gainNode.gain.value = Math.pow(10.0, value / 20.0);
+        }
+    }
+
     let tracks = [
-        {
+        new Track({
             name: "Drums",
             channels: 2
-        },
-        {
+        }),
+        new Track({
             name: "Bass",
             channels: 1
-        },
-        {
+        }),
+        new Track({
             name: "Guitar MG",
             channels: 1,
-            pan: -100
-        },
-        {
+            pan: -1
+        }),
+        new Track({
             name: "Guitar JD",
             channels: 1,
-            pan: +100
-        },
-        {
+            pan: +1
+        }),
+        new Track({
             name: "Vox MG",
-            channels: 1
-        },
-        {
+            channels: 1,
+            pan: 0
+        }),
+        new Track({
             name: "Vox JD",
             channels: 1,
-            pan: +33
-        }
+            pan: +0.33
+        })
     ];
 
     // add an AudioContext
@@ -59,9 +112,12 @@
         }
         c += track.channels;
 
-        // TODO: make pan left/right gain nodes, mute, solo, etc.
-        // Boost mono tracks by +3dB ?
-        merger.connect(ac.destination);
+        // Create track FX chain:
+        track.createNodes(ac);
+        // Connect media source channels to track FX chain:
+        merger.connect(track.inputNode);
+        // Connect track FX chain to master output:
+        track.outputNode.connect(ac.destination);
     }
 </script>
 </body>
