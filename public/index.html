@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+    <button id="play">Play</button>
+    <button id="stop">Stop</button>
+<script>
+    // add an AudioContext
+    let ac = new AudioContext();
+
+    let tracks = [
+        {
+            name: "Drums",
+            channels: 2
+        },
+        {
+            name: "Bass",
+            channels: 1
+        },
+        {
+            name: "Guitars",
+            channels: 2
+        },
+        {
+            name: "Vox MG",
+            channels: 1
+        },
+        {
+            name: "Vox JD",
+            channels: 1
+        }
+    ];
+
+    let play = document.getElementById("play");
+    let stop = document.getElementById("stop");
+    play.setAttribute('disabled', 'disabled');
+    play.onclick = function () {
+        // Start playing mix:
+        for (let track of tracks) {
+            track.source.start(ac.currentTime, 0);
+        }
+        play.setAttribute('disabled', 'disabled');
+    };
+    stop.onclick = function() {
+        // Stop playing mix:
+        for (let track of tracks) {
+            track.source.stop(0);
+        }
+        play.removeAttribute('disabled');
+    };
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', '/05%20-%20Hash%20Pipe.opus', true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function() {
+        console.log("loaded!");
+        let audioData = xhr.response;
+        ac.decodeAudioData(audioData).then(mcBuffer => {
+            console.log("decoded!");
+            // Create each track from multichannel mix:
+            let c = 0;
+            for (let track of tracks) {
+                // Create buffer
+                let buffer = ac.createBuffer(track.channels, mcBuffer.length, mcBuffer.sampleRate);
+
+                let source = ac.createBufferSource();
+                source.buffer = buffer;
+
+                for (let i = 0; i < track.channels; i++) {
+                    buffer.copyToChannel(mcBuffer.getChannelData(c+i), i);
+                }
+                c += track.channels;
+
+                track.buffer = buffer;
+                track.source = source;
+                track.source.connect(ac.destination);
+            }
+            console.log("ready!");
+            play.removeAttribute('disabled');
+        });
+    };
+    xhr.send();
+
+</script>
+</body>
+</html>
