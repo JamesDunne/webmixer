@@ -8,8 +8,35 @@
     <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
 </audio>
 <script>
+    class Mixer {
+        constructor() {
+            this._tracks = [];
+        }
+
+        addTracks(trackOpts) {
+            this._tracks = this._tracks.concat(trackOpts.map(opts => new Track(this, opts)));
+        }
+
+        get tracks() {
+            return this._tracks;
+        }
+
+        get anySoloedTracks() {
+            return this._tracks.some(tr => tr.solo);
+        }
+
+        get unsoloedTracks() {
+            return this._tracks.filter(tr => !tr.solo);
+        }
+
+        get soloedTracks() {
+            return this._tracks.filter(tr => tr.solo);
+        }
+    }
+
     class Track {
-        constructor(opts) {
+        constructor(mixer, opts) {
+            this.mixer = mixer;
             this.name = opts.name;
             this.channels = opts.channels;
             this._pan = opts.pan || 0;
@@ -90,6 +117,12 @@
         }
         set solo(value) {
             this._solo = value;
+            if (this.mixer.anySoloedTracks) {
+                this.mixer.unsoloedTracks.forEach(tr => tr.soloMute = true);
+                this.mixer.soloedTracks.forEach(tr => tr.soloMute = false);
+            } else {
+                this.mixer.tracks.forEach(tr => tr.soloMute = false);
+            }
         }
 
         get soloMute() {
@@ -104,42 +137,43 @@
         }
     }
 
-    let tracks = [
-        new Track({
+    let mixer = new Mixer();
+    mixer.addTracks([
+        {
             name: "Drums",
             channels: 2,
             level: 0
-        }),
-        new Track({
+        },
+        {
             name: "Bass",
             channels: 1,
             level: 0
-        }),
-        new Track({
+        },
+        {
             name: "Guitar MG",
             channels: 1,
             pan: -0.8,
             level: 0
-        }),
-        new Track({
+        },
+        {
             name: "Guitar JD",
             channels: 1,
             pan: +0.8,
             level: 0
-        }),
-        new Track({
+        },
+        {
             name: "Vox MG",
             channels: 1,
             pan: 0,
             level: 0
-        }),
-        new Track({
+        },
+        {
             name: "Vox JD",
             channels: 1,
             pan: +0.33,
             level: 0
-        })
-    ];
+        }
+    ]);
 
     // add an AudioContext
     let ac = new AudioContext();
@@ -154,7 +188,7 @@
     mcSource.connect(splitter);
 
     let c = 0;
-    for (let track of tracks) {
+    for (let track of mixer.tracks) {
         // Merge outputs into channels:
         let merger = ac.createChannelMerger(track.channels);
         for (let i = 0; i < track.channels; i++) {
