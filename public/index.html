@@ -15,6 +15,8 @@
             this._pan = opts.pan || 0;
             this._level = opts.level || 0;
             this._mute = opts.mute || false;
+            this._solo = opts.solo || false;
+            this._soloMute = false;
         }
 
         createNodes(ac) {
@@ -35,6 +37,7 @@
             this.postPanNode.connect(this.gainNode);
 
             // Set properties:
+            this.setSoloMute();
             this.setMute();
             this.setPan();
             this.setLevel();
@@ -80,6 +83,24 @@
         }
         setMute() {
             this.muteNode.gain.value = this._mute ? 0 : 1;
+        }
+
+        get solo() {
+            return this._solo;
+        }
+        set solo(value) {
+            this._solo = value;
+        }
+
+        get soloMute() {
+            return this._soloMute;
+        }
+        set soloMute(value) {
+            this._soloMute = value;
+            this.setSoloMute();
+        }
+        setSoloMute() {
+            this.soloMuteNode.gain.value = this._soloMute ? 0 : 1;
         }
     }
 
