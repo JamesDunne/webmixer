@@ -14,6 +14,7 @@
             this.channels = opts.channels;
             this._pan = opts.pan || 0;
             this._level = opts.level || 0;
+            this._mute = opts.mute || false;
         }
 
         createNodes(ac) {
@@ -32,6 +33,11 @@
             this.panLeftNode.connect(this.postPanNode, 0, 0);
             this.panRightNode.connect(this.postPanNode, 0, 1);
             this.postPanNode.connect(this.gainNode);
+
+            // Set properties:
+            this.setMute();
+            this.setPan();
+            this.setLevel();
         }
 
         get inputNode() {
@@ -47,8 +53,11 @@
         }
         set pan(value) {
             this._pan = value;
-            this.panLeftNode.gain.value = (value * -0.5) + 0.5;
-            this.panRightNode.gain.value = (value * 0.5) + 0.5;
+            this.setPan();
+        }
+        setPan() {
+            this.panLeftNode.gain.value = (this._pan * -0.5) + 0.5;
+            this.panRightNode.gain.value = (this._pan * 0.5) + 0.5;
         }
 
         get level() {
@@ -56,38 +65,58 @@
         }
         set level(value) {
             this._level = value;
-            this.gainNode.gain.value = Math.pow(10.0, value / 20.0);
+            this.setLevel();
+        }
+        setLevel() {
+            this.gainNode.gain.value = Math.pow(10.0, this._level / 20.0);
+        }
+
+        get mute() {
+            return this._mute;
+        }
+        set mute(value) {
+            this._mute = value;
+            this.setMute();
+        }
+        setMute() {
+            this.muteNode.gain.value = this._mute ? 0 : 1;
         }
     }
 
     let tracks = [
         new Track({
             name: "Drums",
-            channels: 2
+            channels: 2,
+            level: 0
         }),
         new Track({
             name: "Bass",
-            channels: 1
+            channels: 1,
+            level: 0
         }),
         new Track({
             name: "Guitar MG",
             channels: 1,
-            pan: -1
+            pan: -0.8,
+            level: 0
         }),
         new Track({
             name: "Guitar JD",
             channels: 1,
-            pan: +1
+            pan: +0.8,
+            level: 0
         }),
         new Track({
             name: "Vox MG",
             channels: 1,
-            pan: 0
+            pan: 0,
+            level: 0
         }),
         new Track({
             name: "Vox JD",
             channels: 1,
-            pan: +0.33
+            pan: +0.33,
+            level: 0
         })
     ];
 
