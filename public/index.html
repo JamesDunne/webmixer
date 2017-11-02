@@ -42,24 +42,27 @@
     let ac = new AudioContext();
 
     let mcAudio = document.getElementById("mc");
-    (function() {
-        let mcSource = ac.createMediaElementSource(mcAudio);
-        // TODO: would be nice to detect channel count from source.
-        let splitter = ac.createChannelSplitter(8);
-        splitter.channelCountMode = "explicit";
-        splitter.channelInterpretation = "discrete";
-        mcSource.connect(splitter);
+    let mcSource = ac.createMediaElementSource(mcAudio);
 
-        let c = 0;
-        for (let track of tracks) {
-            let merger = ac.createChannelMerger(track.channels);
-            merger.connect(ac.destination);
-            for (let i = 0; i < track.channels; i++) {
-                splitter.connect(merger, c+i, i);
-            }
-            c += track.channels;
+    // TODO: would be nice to detect channel count from source.
+    let splitter = ac.createChannelSplitter(8);
+    splitter.channelCountMode = "explicit";
+    splitter.channelInterpretation = "discrete";
+    mcSource.connect(splitter);
+
+    let c = 0;
+    for (let track of tracks) {
+        // Merge outputs into channels:
+        let merger = ac.createChannelMerger(track.channels);
+        for (let i = 0; i < track.channels; i++) {
+            splitter.connect(merger, c+i, i);
         }
-    })();
+        c += track.channels;
+
+        // TODO: make pan left/right gain nodes, mute, solo, etc.
+        // Boost mono tracks by +3dB ?
+        merger.connect(ac.destination);
+    }
 </script>
 </body>
 </html>
