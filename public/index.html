@@ -13,14 +13,14 @@
 </ul>
 <div class="mixer">
     <div class="trackstrip">
-        <div class="track">
+        <div class="track" data-track="Drums">
             <div class="fader">
-                <input type="range" min="0" max="1.5" step="0.01" value="1">
+                <input type="range" min="0" max="1.9952623149688795" step="0.001" value="1">
             </div>
         </div>
-        <div class="track">
+        <div class="track" data-track="Bass">
             <div class="fader">
-                <input type="range" min="0" max="1.5" step="0.01" value="1">
+                <input type="range" min="0" max="1.9952623149688795" step="0.001" value="1">
             </div>
         </div>
     </div>
@@ -65,13 +65,40 @@
     let mcAudio = document.getElementById("mc");
 
     // Wire up click handlers on links:
-    document.querySelectorAll(".switch").forEach(el => el.addEventListener("click", e => {
-        e.preventDefault();
-        let href = e.target.getAttribute("href");
-        mcAudio.src = href;
-        mcAudio.play();
-        return false;
-    }));
+    document.querySelectorAll(".switch").forEach(
+        el => el.addEventListener("click", e => {
+            e.preventDefault();
+            let href = e.target.getAttribute("href");
+            mcAudio.src = href;
+            mcAudio.play();
+            return false;
+        })
+    );
+
+    function faderByTrack(name) {
+        return document.querySelector("div.track[data-track="+name+"] input[type=range]");
+    }
+
+    function faderInputHandler(el) {
+        let trackEl = el.parentElement.parentElement;
+        let trackName = trackEl.getAttribute("data-track");
+        let track = mixer.track(trackName);
+
+        let fader = el.value;
+        fader = Math.pow(fader, 2.0);
+        let dB = 20.0 * Math.log10(fader);
+        track.level = dB;
+    }
+
+    document.querySelectorAll(".fader input[type=range]").forEach(
+        el => {
+            el.addEventListener("dblclick", e => {
+                e.target.value = 1;
+                faderInputHandler(e.target);
+            });
+            el.addEventListener("input", e => faderInputHandler(e.target))
+        }
+    );
 
     // add an AudioContext
     let ac = new AudioContext();

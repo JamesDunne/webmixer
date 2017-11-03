@@ -14,6 +14,10 @@ class Mixer {
         this.setLevel();
     }
 
+    track(name) {
+        return this._tracks.find(tr => tr.name == name);
+    }
+
     get inputNode() {
         return this.gainNode;
     }
