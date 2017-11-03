@@ -7,6 +7,10 @@
 <audio id="mc" controls autoplay>
     <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
 </audio>
+<ul>
+    <li><a href="/05%20-%20Hash%20Pipe.opus" class="switch">05 - Hash Pipe</a></li>
+    <li><a href="/09%20-%20Kids.opus" class="switch">09 - Kids</a></li>
+</ul>
 <script src="mixer.js"></script>
 <script src="track.js"></script>
 <script>
@@ -43,10 +47,20 @@
         }
     ]);
 
+    // Find out <audio> element:
+    let mcAudio = document.getElementById("mc");
+
+    // Wire up click handlers on links:
+    document.querySelectorAll(".switch").forEach(el => el.addEventListener("click", e => {
+        e.preventDefault();
+        let href = e.srcElement.getAttribute("href");
+        mcAudio.src = href;
+        mcAudio.play();
+        return false;
+    }));
+
     // add an AudioContext
     let ac = new AudioContext();
-
-    let mcAudio = document.getElementById("mc");
     let mcSource = ac.createMediaElementSource(mcAudio);
 
     // TODO: would be nice to detect channel count from source.
