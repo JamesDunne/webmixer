@@ -32,13 +32,21 @@
         get soloedTracks() {
             return this._tracks.filter(tr => tr.solo);
         }
+
+        applySolo() {
+            if (this.anySoloedTracks) {
+                this.unsoloedTracks.forEach(tr => tr.soloMute = true);
+                this.soloedTracks.forEach(tr => tr.soloMute = false);
+            } else {
+                this._tracks.forEach(tr => tr.soloMute = false);
+            }
+        }
     }
 
     class Track {
         constructor(mixer, opts) {
             this.mixer = mixer;
             this.name = opts.name;
-            this.channels = opts.channels;
             this._pan = opts.pan || 0;
             this._level = opts.level || 0;
             this._mute = opts.mute || false;
@@ -117,12 +125,7 @@
         }
         set solo(value) {
             this._solo = value;
-            if (this.mixer.anySoloedTracks) {
-                this.mixer.unsoloedTracks.forEach(tr => tr.soloMute = true);
-                this.mixer.soloedTracks.forEach(tr => tr.soloMute = false);
-            } else {
-                this.mixer.tracks.forEach(tr => tr.soloMute = false);
-            }
+            this.mixer.applySolo();
         }
 
         get soloMute() {
@@ -140,36 +143,36 @@
     let mixer = new Mixer();
     mixer.addTracks([
         {
-            name: "Drums",
-            channels: 2,
-            level: 0
+            name: "Drums L",
+            level: 0,
+            pan: -1
+        },
+        {
+            name: "Drums R",
+            level: 0,
+            pan: +1
         },
         {
             name: "Bass",
-            channels: 1,
             level: 0
         },
         {
             name: "Guitar MG",
-            channels: 1,
-            pan: -0.8,
+            pan: -1.0,
             level: 0
         },
         {
             name: "Guitar JD",
-            channels: 1,
-            pan: +0.8,
+            pan: +1.0,
             level: 0
         },
         {
             name: "Vox MG",
-            channels: 1,
             pan: 0,
             level: 0
         },
         {
             name: "Vox JD",
-            channels: 1,
             pan: +0.33,
             level: 0
         }
@@ -189,20 +192,17 @@
 
     let c = 0;
     for (let track of mixer.tracks) {
-        // Merge outputs into channels:
-        let merger = ac.createChannelMerger(track.channels);
-        for (let i = 0; i < track.channels; i++) {
-            splitter.connect(merger, c+i, i);
-        }
-        c += track.channels;
-
         // Create track FX chain:
         track.createNodes(ac);
-        // Connect media source channels to track FX chain:
-        merger.connect(track.inputNode);
+
+        // Connect media output to track input:
+        splitter.connect(track.inputNode, c, 0);
+        c++;
+
         // Connect track FX chain to master output:
         track.outputNode.connect(ac.destination);
     }
+    mixer.applySolo();
 </script>
 </body>
 </html>
