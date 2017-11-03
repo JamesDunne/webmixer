@@ -45,6 +45,7 @@ class Track {
         this.setPan();
     }
     setPan() {
+        if (!this.pannerNode) return;
         this.pannerNode.pan.value = this._pan;
         this.setLevel();
     }
@@ -57,6 +58,7 @@ class Track {
         this.setLevel();
     }
     setLevel() {
+        if (!this.gainNode) return;
         let dB = this._level;
         // Decrease apparent level depending on pan:
         dB += Math.abs(this._pan) * -6.0;
@@ -71,6 +73,7 @@ class Track {
         this.setMute();
     }
     setMute() {
+        if (!this.muteNode) return;
         this.muteNode.gain.value = this._mute ? 0 : 1;
     }
 
@@ -79,6 +82,10 @@ class Track {
     }
     set solo(value) {
         this._solo = value;
+        this.setSolo();
+    }
+    setSolo() {
+        if (!this.mixer) return;
         this.mixer.applySolo();
     }
 
@@ -90,6 +97,7 @@ class Track {
         this.setSoloMute();
     }
     setSoloMute() {
+        if (!this.soloMuteNode) return;
         this.soloMuteNode.gain.value = this._soloMute ? 0 : 1;
     }
 }

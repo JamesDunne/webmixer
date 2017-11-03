@@ -55,6 +55,7 @@ class Mixer {
         this.setLevel();
     }
     setLevel() {
+        if (!this.gainNode) return;
         let dB = this._level;
         this.gainNode.gain.value = Math.pow(10.0, dB / 20.0);
     }
