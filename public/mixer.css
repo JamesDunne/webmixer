@@ -3,6 +3,8 @@
     position: relative;
     display: block;
     float: left;
+    font-size: 12pt;
+    font-family: sans-serif;
 }
 
 .mixer .trackstrip {
@@ -22,6 +24,19 @@
     -webkit-box-shadow: inset 0 0 5px 0 rgba(26,27,28,.75);
     -moz-box-shadow: inset 0 0 5px 0 rgba(26,27,28,.75);
     box-shadow: inset 0 0 5px 0 rgba(26,27,28,.75);
+}
+
+.mixer .trackstrip .track .name {
+    display: block;
+    height: 1em;
+    text-align: center;
+    overflow: hidden;
+    font-size: 10px;
+    color: #aaa;
+}
+
+.mixer .trackstrip .track .name .label {
+    white-space: nowrap;
 }
 
 /* FADER */

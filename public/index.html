@@ -14,7 +14,10 @@
 <div class="mixer">
     <div class="trackstrip">
         <template id="trackTemplate">
-            <div class="track" data-track="">
+            <div class="track" data-track="Drums">
+                <div class="name">
+                    <span class="label">Drums</span>
+                </div>
                 <div class="button-container">
                     <div class="mute-button">
                         <label>
@@ -49,11 +52,11 @@
             name: "Bass"
         },
         {
-            name: "Guitar MG",
+            name: "Gtr MG",
             pan: -0.8
         },
         {
-            name: "Guitar JD",
+            name: "Gtr JD",
             pan: +0.8
         },
         {
@@ -115,7 +118,12 @@
     let trackTemplate = document.getElementById("trackTemplate");
     let trackStrip = document.querySelector(".mixer .trackstrip");
     mixer.tracks.forEach(track => {
+        // Clone template:
         var node = document.importNode(trackTemplate.content, true);
+
+        // Update label:
+        let nameNode = node.querySelector(".name span.label");
+        nameNode.innerText = track.name;
 
         let trackNode = node.querySelector("div.track");
         trackNode.setAttribute("data-track", track.name);
