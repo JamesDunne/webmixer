@@ -15,12 +15,12 @@
     <div class="trackstrip">
         <div class="track" data-track="Drums">
             <div class="fader">
-                <input type="range" min="0" max="1.9952623149688795" step="0.001" value="1">
+                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
             </div>
         </div>
         <div class="track" data-track="Bass">
             <div class="fader">
-                <input type="range" min="0" max="1.9952623149688795" step="0.001" value="1">
+                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
             </div>
         </div>
     </div>
@@ -63,6 +63,7 @@
 
     // Find out <audio> element:
     let mcAudio = document.getElementById("mc");
+    const faderCenter = 1.25;
 
     // Wire up click handlers on links:
     document.querySelectorAll(".switch").forEach(
@@ -85,15 +86,16 @@
         let track = mixer.track(trackName);
 
         let fader = el.value;
-        fader = Math.pow(fader, 2.0);
+        fader = Math.pow(fader / faderCenter, 3.0);
         let dB = 20.0 * Math.log10(fader);
+        console.log(dB);
         track.level = dB;
     }
 
     document.querySelectorAll(".fader input[type=range]").forEach(
         el => {
             el.addEventListener("dblclick", e => {
-                e.target.value = 1;
+                e.target.value = faderCenter;
                 faderInputHandler(e.target);
             });
             el.addEventListener("input", e => faderInputHandler(e.target))
