@@ -23,6 +23,26 @@
                 <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
             </div>
         </div>
+        <div class="track" data-track="Guitar MG">
+            <div class="fader">
+                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
+            </div>
+        </div>
+        <div class="track" data-track="Guitar JD">
+            <div class="fader">
+                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
+            </div>
+        </div>
+        <div class="track" data-track="Vox MG">
+            <div class="fader">
+                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
+            </div>
+        </div>
+        <div class="track" data-track="Vox JD">
+            <div class="fader">
+                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
+            </div>
+        </div>
     </div>
 </div>
 <script src="mixer.js"></script>
@@ -88,7 +108,7 @@
         let fader = el.value;
         fader = Math.pow(fader / faderCenter, 3.0);
         let dB = 20.0 * Math.log10(fader);
-        console.log(dB);
+        //console.log(dB);
         track.level = dB;
     }
 
