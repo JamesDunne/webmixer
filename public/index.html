@@ -13,36 +13,13 @@
 </ul>
 <div class="mixer">
     <div class="trackstrip">
-        <div class="track" data-track="Drums">
-            <div class="fader">
-                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
+    	<template id="trackTemplate">
+            <div class="track" data-track="Drums">
+                <div class="fader">
+                    <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
+                </div>
             </div>
-        </div>
-        <div class="track" data-track="Bass">
-            <div class="fader">
-                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
-            </div>
-        </div>
-        <div class="track" data-track="Guitar MG">
-            <div class="fader">
-                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
-            </div>
-        </div>
-        <div class="track" data-track="Guitar JD">
-            <div class="fader">
-                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
-            </div>
-        </div>
-        <div class="track" data-track="Vox MG">
-            <div class="fader">
-                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
-            </div>
-        </div>
-        <div class="track" data-track="Vox JD">
-            <div class="fader">
-                <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
-            </div>
-        </div>
+    	</template>
     </div>
 </div>
 <script src="mixer.js"></script>
@@ -84,6 +61,15 @@
     // Find out <audio> element:
     let mcAudio = document.getElementById("mc");
     const faderCenter = 1.25;
+
+    // Stamp template per each track:
+    let trackTemplate = document.getElementById("trackTemplate");
+    let trackStrip = document.querySelector(".mixer .trackstrip");
+    mixer.tracks.forEach(track => {
+        var node = document.importNode(trackTemplate.content, true);
+        node.querySelector("div.track").setAttribute("data-track", track.name);
+        trackStrip.appendChild(node);
+    });
 
     // Wire up click handlers on links:
     document.querySelectorAll(".switch").forEach(
