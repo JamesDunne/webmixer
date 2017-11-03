@@ -1,3 +1,7 @@
+:root {
+    --fader-height: 300px;
+}
+
 .mixer {
     background: #16191c;
     position: relative;
@@ -8,7 +12,7 @@
 }
 
 .mixer .trackstrip {
-    height: 452px;
+    height: calc(var(--fader-height) + 52px); /* 452px */
     position: relative;
     display: block;
     float: left;
@@ -58,14 +62,14 @@
     -webkit-transform: rotate(270deg);
     transform: rotate(270deg);
     position: absolute;
-    top: 232px;
-    left: -180.2px;
+    top: calc(var(--fader-height) * 0.5 + 32px); /* 232px */
+    left: calc(var(--fader-height) * -0.5 + 18.8px); /* -180.2px */
 }
 
 .mixer .trackstrip .track .fader input[type=range] {
     align-self: center;
     padding: 0;
-    width: 400px;
+    width: calc(var(--fader-height)); /* 400px */
     height: 0;
     background: repeating-linear-gradient(90deg,#3b3e41,#3b3e41 .0625em,transparent .0625em,transparent 2em) 50% .4375em no-repeat border-box,repeating-linear-gradient(90deg,#3b3e41,#3b3e41 .0625em,transparent .0625em,transparent 2em) 50% 2em no-repeat border-box;
     background-size: 390px .625em,390px .625em,100% 2.25em;
