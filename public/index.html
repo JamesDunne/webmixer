@@ -124,7 +124,7 @@
         fader.value = dB_to_fader(track.level);
         fader.addEventListener("dblclick", e => {
             e.target.value = faderCenter;
-            faderInputHandler(e.target);
+            faderInputHandler(e.target, trackFromDescendent(e.target));
         });
         fader.addEventListener("input", e => faderInputHandler(e.target, trackFromDescendent(e.target)));
 
