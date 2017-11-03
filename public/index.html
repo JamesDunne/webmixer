@@ -67,7 +67,7 @@
     // Wire up click handlers on links:
     document.querySelectorAll(".switch").forEach(el => el.addEventListener("click", e => {
         e.preventDefault();
-        let href = e.srcElement.getAttribute("href");
+        let href = e.target.getAttribute("href");
         mcAudio.src = href;
         mcAudio.play();
         return false;
@@ -76,6 +76,8 @@
     // add an AudioContext
     let ac = new AudioContext();
     let mcSource = ac.createMediaElementSource(mcAudio);
+    mcSource.channelCountMode = "explicit";
+    mcSource.channelInterpretation = "discrete";
 
     // TODO: would be nice to detect channel count from source.
     let splitter = ac.createChannelSplitter(8);
@@ -96,6 +98,9 @@
 
         // Connect media output to track input:
         let merger = ac.createChannelMerger(2);
+        merger.channelCountMode = "explicit";
+        merger.channelInterpretation = "discrete";
+
         if (track.channels == 2) {
             splitter.connect(merger, c++, 0);
             splitter.connect(merger, c++, 1);
