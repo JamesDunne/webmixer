@@ -99,7 +99,6 @@
     function faderInputHandler(el, track) {
         let fader = el.value;
         let dB = fader_to_dB(fader);
-        //console.log(dB);
         track.level = dB;
 
         // Update level label:
