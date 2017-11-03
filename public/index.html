@@ -193,9 +193,7 @@
 
     // Create mixer FX chain:
     mixer.createNodes(ac);
-    mixer.level = 6;
-    // Connect mixer master out to destination:
-    mixer.outputNode.connect(ac.destination);
+    mixer.master.level = 6;
 
     let c = 0;
     for (let track of mixer.tracks) {
@@ -217,8 +215,8 @@
         }
         merger.connect(track.inputNode);
 
-        // Connect track FX chain to master output:
-        track.outputNode.connect(mixer.inputNode);
+        // Connect track FX chain to master track's input:
+        track.outputNode.connect(mixer.master.inputNode);
     }
     mixer.applySolo();
 </script>

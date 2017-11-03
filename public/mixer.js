@@ -1,7 +1,7 @@
 class Mixer {
     constructor() {
+        this._master = new Track(this, {name:"MASTER"});
         this._tracks = [];
-        this._level = 0;
     }
 
     addTracks(trackOpts) {
@@ -9,21 +9,17 @@ class Mixer {
     }
 
     createNodes(ac) {
-        this.gainNode = ac.createGain();
-
-        this.setLevel();
+        this.master.createNodes(ac);
+        // Connect mixer master out to destination:
+        mixer.master.outputNode.connect(ac.destination);
     }
 
     track(name) {
         return this._tracks.find(tr => tr.name == name);
     }
 
-    get inputNode() {
-        return this.gainNode;
-    }
-
-    get outputNode() {
-        return this.gainNode;
+    get master() {
+        return this._master;
     }
 
     get tracks() {
@@ -49,18 +45,5 @@ class Mixer {
         } else {
             this._tracks.forEach(tr => tr.soloMute = false);
         }
-    }
-
-    get level() {
-        return this._level;
-    }
-    set level(value) {
-        this._level = value;
-        this.setLevel();
-    }
-    setLevel() {
-        if (!this.gainNode) return;
-        let dB = this._level;
-        this.gainNode.gain.value = Math.pow(10.0, dB / 20.0);
     }
 }
