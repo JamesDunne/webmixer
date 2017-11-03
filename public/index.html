@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="mixer.css"/>
 </head>
 <body>
-<audio id="mc" controls autoplay>
+<audio id="mc" controls>
     <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
 </audio>
 <ul>
@@ -14,7 +14,7 @@
 <div class="mixer">
     <div class="trackstrip">
     	<template id="trackTemplate">
-            <div class="track" data-track="Drums">
+            <div class="track" data-track="">
                 <div class="button-container">
                     <div class="mute-button">
                         <label>
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="fader">
-                    <input class="level" type="range" min="0" max="1.8885" step="0.001" value="1.25">
+                    <input type="range" min="0" max="1.8885" step="0.001" value="1.25">
                 </div>
             </div>
     	</template>
@@ -83,15 +83,28 @@
         return document.querySelector("div.track[data-track="+name+"] input.level[type=range]");
     }
 
-    function faderInputHandler(el) {
+    function trackFromDescendent(el) {
         let trackEl = el.closest("div.track");
         let trackName = trackEl.getAttribute("data-track");
         let track = mixer.track(trackName);
+        return track;
+    }
 
+    function faderInputHandler(el, track) {
         let fader = el.value;
         let dB = fader_to_dB(fader);
         //console.log(dB);
         track.level = dB;
+    }
+
+    function muteInputHandler(el, track) {
+        let mute = el.checked;
+        track.mute = mute;
+    }
+
+    function soloInputHandler(el, track) {
+        let solo = el.checked;
+        track.solo = solo;
     }
 
     // Find out <audio> element:
@@ -107,13 +120,19 @@
         let trackNode = node.querySelector("div.track");
         trackNode.setAttribute("data-track", track.name);
 
-        let fader = trackNode.querySelector("input.level[type=range]");
+        let fader = trackNode.querySelector(".fader input[type=range]");
         fader.value = dB_to_fader(track.level);
         fader.addEventListener("dblclick", e => {
             e.target.value = faderCenter;
             faderInputHandler(e.target);
         });
-        fader.addEventListener("input", e => faderInputHandler(e.target))
+        fader.addEventListener("input", e => faderInputHandler(e.target, trackFromDescendent(e.target)));
+
+        let mute = trackNode.querySelector(".mute-button input[type=checkbox]");
+        mute.addEventListener("change", e => muteInputHandler(e.target, trackFromDescendent(e.target)));
+
+        let solo = trackNode.querySelector(".solo-button input[type=checkbox]");
+        solo.addEventListener("change", e => soloInputHandler(e.target, trackFromDescendent(e.target)));
 
         trackStrip.appendChild(node);
     });
