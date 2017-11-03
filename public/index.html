@@ -15,11 +15,19 @@
     <div class="trackstrip">
     	<template id="trackTemplate">
             <div class="track" data-track="Drums">
-                <div class="mute-button">
-                    <label>
-                        <input type="checkbox" value="1">
-                        <span>M</span>
-                    </label>
+                <div class="button-container">
+                    <div class="mute-button">
+                        <label>
+                            <input type="checkbox" value="1">
+                            <span>M</span>
+                        </label>
+                    </div>
+                    <div class="solo-button">
+                        <label>
+                            <input type="checkbox" value="1">
+                            <span>S</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="fader">
                     <input class="level" type="range" min="0" max="1.8885" step="0.001" value="1.25">
