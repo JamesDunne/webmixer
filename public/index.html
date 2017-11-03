@@ -84,7 +84,7 @@
     }
 
     function faderInputHandler(el) {
-        let trackEl = el.parentElement.parentElement;
+        let trackEl = el.closest("div.track");
         let trackName = trackEl.getAttribute("data-track");
         let track = mixer.track(trackName);
 
