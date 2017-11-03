@@ -4,7 +4,7 @@
 
 </head>
 <body>
-<audio id="mc" controls>
+<audio id="mc" controls autoplay>
     <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
 </audio>
 <script>
@@ -47,6 +47,7 @@
         constructor(mixer, opts) {
             this.mixer = mixer;
             this.name = opts.name;
+            this.channels = opts.channels || 1;
             this._pan = opts.pan || 0;
             this._level = opts.level || 0;
             this._mute = opts.mute || false;
@@ -54,22 +55,17 @@
             this._soloMute = false;
         }
 
-        createNodes(ac) {
+        createNodes(ac /*: AudioContext */) {
             // Create default nodes:
             this.soloMuteNode = ac.createGain();
             this.muteNode = ac.createGain();
-            this.panLeftNode = ac.createGain();
-            this.panRightNode = ac.createGain();
-            this.postPanNode = ac.createChannelMerger(2);
+            this.pannerNode = ac.createStereoPanner();
             this.gainNode = ac.createGain();
 
             // Connect nodes:
             this.soloMuteNode.connect(this.muteNode);
-            this.muteNode.connect(this.panLeftNode);
-            this.muteNode.connect(this.panRightNode);
-            this.panLeftNode.connect(this.postPanNode, 0, 0);
-            this.panRightNode.connect(this.postPanNode, 0, 1);
-            this.postPanNode.connect(this.gainNode);
+            this.muteNode.connect(this.pannerNode);
+            this.pannerNode.connect(this.gainNode);
 
             // Set properties:
             this.setSoloMute();
@@ -94,8 +90,8 @@
             this.setPan();
         }
         setPan() {
-            this.panLeftNode.gain.value = (this._pan * -0.5) + 0.5;
-            this.panRightNode.gain.value = (this._pan * 0.5) + 0.5;
+            this.pannerNode.pan.value = this._pan;
+            this.setLevel();
         }
 
         get level() {
@@ -106,7 +102,10 @@
             this.setLevel();
         }
         setLevel() {
-            this.gainNode.gain.value = Math.pow(10.0, this._level / 20.0);
+            let dB = this._level;
+            // Decrease apparent level by up to -3dB depending on pan:
+            dB += Math.abs(this._pan) * -3.0;
+            this.gainNode.gain.value = Math.pow(10.0, dB / 20.0);
         }
 
         get mute() {
@@ -143,38 +142,33 @@
     let mixer = new Mixer();
     mixer.addTracks([
         {
-            name: "Drums L",
-            level: 0,
-            pan: -1
-        },
-        {
-            name: "Drums R",
-            level: 0,
-            pan: +1
+            name: "Drums",
+            channels: 2,
+            level: 0
         },
         {
             name: "Bass",
-            level: 0
+            level: 1
         },
         {
             name: "Guitar MG",
-            pan: -1.0,
-            level: 0
+            pan: -0.8,
+            level: -2
         },
         {
             name: "Guitar JD",
-            pan: +1.0,
-            level: 0
+            pan: +0.8,
+            level: -2
         },
         {
             name: "Vox MG",
             pan: 0,
-            level: 0
+            level: 1
         },
         {
             name: "Vox JD",
             pan: +0.33,
-            level: 0
+            level: 1
         }
     ]);
 
@@ -196,8 +190,16 @@
         track.createNodes(ac);
 
         // Connect media output to track input:
-        splitter.connect(track.inputNode, c, 0);
-        c++;
+        let merger = ac.createChannelMerger(2);
+        if (track.channels == 2) {
+            splitter.connect(merger, c++, 0);
+            splitter.connect(merger, c++, 1);
+        } else {
+            splitter.connect(merger, c, 0);
+            splitter.connect(merger, c, 1);
+            c++;
+        }
+        merger.connect(track.inputNode);
 
         // Connect track FX chain to master output:
         track.outputNode.connect(ac.destination);
