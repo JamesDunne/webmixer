@@ -129,9 +129,11 @@
         fader.addEventListener("input", e => faderInputHandler(e.target, trackFromDescendent(e.target)));
 
         let mute = trackNode.querySelector(".mute-button input[type=checkbox]");
+        mute.checked = track.mute;
         mute.addEventListener("change", e => muteInputHandler(e.target, trackFromDescendent(e.target)));
 
         let solo = trackNode.querySelector(".solo-button input[type=checkbox]");
+        solo.checked = track.solo;
         solo.addEventListener("change", e => soloInputHandler(e.target, trackFromDescendent(e.target)));
 
         trackStrip.appendChild(node);
