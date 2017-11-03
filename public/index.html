@@ -103,8 +103,8 @@
         }
         setLevel() {
             let dB = this._level;
-            // Decrease apparent level by up to -3dB depending on pan:
-            dB += Math.abs(this._pan) * -3.0;
+            // Decrease apparent level depending on pan:
+            dB += Math.abs(this._pan) * -6.0;
             this.gainNode.gain.value = Math.pow(10.0, dB / 20.0);
         }
 
@@ -148,7 +148,7 @@
         },
         {
             name: "Bass",
-            level: 1
+            level: 0
         },
         {
             name: "Guitar MG",
@@ -163,12 +163,12 @@
         {
             name: "Vox MG",
             pan: 0,
-            level: 1
+            level: 0
         },
         {
             name: "Vox JD",
             pan: +0.33,
-            level: 1
+            level: 0
         }
     ]);
 
