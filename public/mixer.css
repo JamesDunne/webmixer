@@ -24,6 +24,7 @@
     box-shadow: inset 0 0 5px 0 rgba(26,27,28,.75);
 }
 
+/* FADER */
 .mixer .trackstrip .track .fader {
     height: 30px;
     display: block;
@@ -157,12 +158,7 @@
     background: #15181b
 }
 
-.mixer .trackstrip .track .mute-button label input {
-    display: none;
-    position: absolute;
-    top: -20px;
-}
-
+/* MUTE */
 .mixer .trackstrip .track .mute-button {
     margin: 6px;
     background-color: #666B73;
@@ -176,6 +172,12 @@
 
 .mixer .trackstrip .track .mute-button label {
     float: left
+}
+
+.mixer .trackstrip .track .mute-button label input {
+    display: none;
+    position: absolute;
+    top: -20px;
 }
 
 .mixer .trackstrip .track .mute-button label span {
