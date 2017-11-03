@@ -1,0 +1,158 @@
+.mixer {
+    background: #16191c;
+    position: relative;
+    display: block;
+    float: left;
+}
+
+.trackstrip {
+    height: 400px;
+    position: relative;
+    display: block;
+    float: left;
+}
+
+.track {
+    width: 30px;
+    position: relative;
+    float: left;
+    display: block;
+    background: #292c30;
+    height: 100%;
+    -webkit-box-shadow: inset 0 0 5px 0 rgba(26,27,28,.75);
+    -moz-box-shadow: inset 0 0 5px 0 rgba(26,27,28,.75);
+    box-shadow: inset 0 0 5px 0 rgba(26,27,28,.75);
+}
+
+.fader {
+    height: 30px;
+    display: block;
+    float: left;
+    -ms-transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    transform: rotate(270deg);
+    position: absolute;
+    top: 185px;
+    left: -187px;
+}
+
+input[type=range] {
+    align-self: center;
+    padding: 0;
+    width: 400px;
+    height: 0;
+    background: repeating-linear-gradient(90deg,#3b3e41,#3b3e41 .0625em,transparent .0625em,transparent 2em) 50% .4375em no-repeat border-box,repeating-linear-gradient(90deg,#3b3e41,#3b3e41 .0625em,transparent .0625em,transparent 2em) 50% 2em no-repeat border-box;
+    background-size: 390px .625em,390px .625em,100% 2.25em;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+input[type=range], input[type=range]::-webkit-slider-runnable-track, input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    position: relative;
+    width: 13em;
+    height: .1em;
+    border-radius: .1875em;
+    background: #15181b
+}
+
+input[type=range]::-moz-range-track {
+    width: 390px;
+    height: .1em;
+    border-radius: .1875em;
+    background: #15181b
+}
+
+input[type=range]::-ms-track {
+    border: none;
+    width: 13em;
+    height: .1em;
+    border-radius: .1875em;
+    color: transparent;
+    background: #15181b
+}
+
+input[type=range]::-ms-fill-lower {
+    display: none
+}
+
+input[type=range]::-webkit-slider-thumb {
+    font-size: .7em;
+    margin-top: -.9em;
+    border: none;
+    width: 4em;
+    height: 2em;
+    border-radius: .5em;
+    box-shadow: -.125em 0 .25em #928886,inset -1px 0 1px #fff;
+    background: radial-gradient(#ebe1e0 10%,rgba(235,225,224,.2) 10%,rgba(235,225,224,0) 72%) 50% 50% no-repeat,radial-gradient(at 100% 50%,#e9dfde,#eae1de 71%,transparent 71%) 2.5em 50% no-repeat,linear-gradient(90deg,#e9dfde,#d0c8c6) 100% 50% no-repeat,radial-gradient(at 0 50%,#d0c6c5,#c6baba 71%,transparent 71%) .75em 50% no-repeat,linear-gradient(90deg,#e3d9d8,#d0c6c5) 0 50% no-repeat,linear-gradient(#cdc0c0,#fcf5ef,#fcf5ef,#cdc0c0);
+    background-size: .825em 100%
+}
+
+input[type=range]::-moz-range-thumb {
+    font-size: .7em;
+    border: none;
+    width: 4em;
+    height: 2em;
+    border-radius: .5em;
+    box-shadow: -.125em 0 .25em #928886,inset -1px 0 1px #fff;
+    background: radial-gradient(#ebe1e0 10%,rgba(235,225,224,.2) 10%,rgba(235,225,224,0) 72%) 50% 50% no-repeat,radial-gradient(at 100% 50%,#e9dfde,#eae1de 71%,transparent 71%) 2.5em 50% no-repeat,linear-gradient(90deg,#e9dfde,#d0c8c6) 100% 50% no-repeat,radial-gradient(at 0 50%,#d0c6c5,#c6baba 71%,transparent 71%) .75em 50% no-repeat,linear-gradient(90deg,#e3d9d8,#d0c6c5) 0 50% no-repeat,linear-gradient(#cdc0c0,#fcf5ef,#fcf5ef,#cdc0c0);
+    background-size: .825em 100%
+}
+
+input[type=range]::-ms-thumb {
+    font-size: .7em;
+    border: none;
+    width: 4em;
+    height: 2em;
+    border-radius: .5em;
+    box-shadow: -.125em 0 .25em #928886,inset -1px 0 1px #fff;
+    background: radial-gradient(#ebe1e0 10%,rgba(235,225,224,.2) 10%,rgba(235,225,224,0) 72%) 50% 50% no-repeat,radial-gradient(at 100% 50%,#e9dfde,#eae1de 71%,transparent 71%) 2.5em 50% no-repeat,linear-gradient(90deg,#e9dfde,#d0c8c6) 100% 50% no-repeat,radial-gradient(at 0 50%,#d0c6c5,#c6baba 71%,transparent 71%) .75em 50% no-repeat,linear-gradient(90deg,#e3d9d8,#d0c6c5) 0 50% no-repeat,linear-gradient(#cdc0c0,#fcf5ef,#fcf5ef,#cdc0c0);
+    background-size: .825em 100%
+}
+
+input[type=range] /deep/ #track:after, input[type=range] /deep/ #track:before, input[type=range]::-webkit-slider-runnable-track:after, input[type=range]::-webkit-slider-runnable-track:before {
+    position: absolute;
+    font: .75em/8em trebuchet ms,arial,sans-serif
+}
+
+input[type=range] /deep/ #track:before, input[type=range]::-webkit-slider-runnable-track:before {
+    top: 50%;
+    right: 100%;
+    transform: translate(50%,-50%) rotate(90deg) translate(0,32%)
+}
+
+input[type=range] /deep/ #track:after, input[type=range]::-webkit-slider-runnable-track:after {
+    left: 50%;
+    width: 3em;
+    word-spacing: 1em
+}
+
+input[type=range]:nth-of-type(1) /deep/ #track:after, input[type=range]:nth-of-type(1)::-webkit-slider-runnable-track:after {
+    bottom: 100%;
+    transform: translate(-50%,50%) rotate(90deg) translate(-4.375em);
+    text-align: right
+}
+
+input[type=range]:nth-of-type(6) /deep/ #track:after, input[type=range]:nth-of-type(6)::-webkit-slider-runnable-track:after {
+    top: 100%;
+    transform: translate(-50%,-50%) rotate(90deg) translate(4.375em)
+}
+
+input[type=range]:focus {
+    outline: 0
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #15181b
+}
+
+input[type=range]:focus::-moz-range-track {
+    background: #15181b
+}
+
+input[type=range]:focus::-ms-track {
+    background: #15181b
+}
