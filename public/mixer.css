@@ -9,6 +9,7 @@
     float: left;
     font-size: 12pt;
     font-family: sans-serif;
+    user-select: none;
 }
 
 .mixer .trackstrip {
@@ -37,6 +38,7 @@
     height: 1em;
     width: 100%;
     float: left;
+    user-select: text;
 }
 
 .center {
