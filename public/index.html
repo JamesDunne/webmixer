@@ -4,21 +4,20 @@
     <link rel="stylesheet" href="mixer.css"/>
 </head>
 <body>
-<audio id="mc" controls controlsList="nodownload" style="width: calc(52px * 7); display: block;">
-    <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
-</audio>
 <ul>
     <li><a href="/05%20-%20Hash%20Pipe.opus" class="switch">05 - Hash Pipe</a></li>
     <li><a href="/09%20-%20Kids.opus" class="switch">09 - Kids</a></li>
 </ul>
 <div class="mixer">
-    <div class="trackstrip">
-    </div>
+    <audio id="mc" controls controlsList="nodownload" style="width: calc(52px * 7); display: block;">
+        <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
+    </audio>
+    <div class="trackstrip"></div>
 </div>
 <template id="trackTemplate">
-    <div class="track" data-track="Drums">
+    <div class="track" data-track="TRACKNAME">
         <div class="label">
-            <span class="name center">Drums</span>
+            <span class="name center">TRACKNAME</span>
         </div>
         <div class="button-container">
             <div class="mute-button">
