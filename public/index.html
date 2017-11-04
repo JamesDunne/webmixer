@@ -158,35 +158,6 @@
     // Create mixer FX chain:
     mixer.createNodes(ac);
 
-    // Find out <audio> element:
-    let mcAudio = document.getElementById("mc");
-
-    // Wire up click handlers on links:
-    document.querySelectorAll(".switch").forEach(
-        el => el.addEventListener("click", e => {
-            e.preventDefault();
-            let href = e.target.getAttribute("href");
-            mcAudio.src = href;
-            mcAudio.play();
-            return false;
-        })
-    );
-
-    let mcSource = ac.createMediaElementSource(mcAudio);
-    mcSource.channelCountMode = "explicit";
-    mcSource.channelInterpretation = "discrete";
-
-    // TODO: would be nice to detect channel count from source.
-    let splitter = ac.createChannelSplitter(8);
-    try {
-        // For older spec implementations:
-        splitter.channelCountMode = "max";
-    } catch (e) {
-        splitter.channelCountMode = "explicit";
-    }
-    splitter.channelInterpretation = "discrete";
-    mcSource.connect(splitter);
-
     // Stamp template per each track:
     let trackTemplate = document.getElementById("trackTemplate");
     let trackStrip = document.querySelector(".mixer .trackstrip");
@@ -226,6 +197,24 @@
         trackStrip.appendChild(node);
     });
 
+    // Find out <audio> element:
+    let mcAudio = document.getElementById("mc");
+
+    let mcSource = ac.createMediaElementSource(mcAudio);
+    mcSource.channelCountMode = "explicit";
+    mcSource.channelInterpretation = "discrete";
+
+    // TODO: would be nice to detect channel count from source.
+    let splitter = ac.createChannelSplitter(8);
+    try {
+        // For older spec implementations:
+        splitter.channelCountMode = "max";
+    } catch (e) {
+        splitter.channelCountMode = "explicit";
+    }
+    splitter.channelInterpretation = "discrete";
+    mcSource.connect(splitter);
+
     let c = 0;
     for (let track of mixer.tracks) {
         // Connect media output to track input:
@@ -244,6 +233,17 @@
         merger.connect(track.inputNode);
     }
     mixer.applySolo();
+
+    // Wire up click handlers on links:
+    document.querySelectorAll(".switch").forEach(
+        el => el.addEventListener("click", e => {
+            e.preventDefault();
+            let href = e.target.getAttribute("href");
+            mcAudio.src = href;
+            mcAudio.play();
+            return false;
+        })
+    );
 </script>
 </body>
 </html>
