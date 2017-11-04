@@ -1,6 +1,8 @@
 :root {
     --fader-height: 300px;
     --fader-width: 40px;
+    --thumb-width: 4em;
+    --thumb-height: 2em;
     --track-width: calc(var(--fader-width) + 12px);
 }
 
@@ -15,7 +17,7 @@
 }
 
 .mixer .trackstrip {
-    height: calc(var(--fader-height) + 56px); /* 452px */
+    height: calc(var(--fader-height) + 56px);
     position: relative;
     display: block;
     float: left;
@@ -75,8 +77,8 @@
     padding: 0;
     width: calc(var(--fader-height)); /* 400px */
     height: 0;
-    background: repeating-linear-gradient(90deg,#3b3e41,#3b3e41 .0625em,transparent .0625em,transparent 2em) 50% .4375em no-repeat border-box,repeating-linear-gradient(90deg,#3b3e41,#3b3e41 .0625em,transparent .0625em,transparent 2em) 50% 2em no-repeat border-box;
-    background-size: 390px .625em,390px .625em,100% 2.25em;
+    background: repeating-linear-gradient(90deg,#3b3e41,#3b3e41 .0625em,transparent .0625em,transparent var(--thumb-height)) 50% .4375em no-repeat border-box,repeating-linear-gradient(90deg,#3b3e41,#3b3e41 .0625em,transparent .0625em,transparent var(--thumb-height)) 50% var(--thumb-height) no-repeat border-box;
+    background-size: calc(var(--fader-height) - 10px) .625em,calc(var(--fader-height) - 10px) .625em,100% 2.25em;
     font-size: 1em;
     cursor: pointer;
 }
@@ -117,8 +119,8 @@
     font-size: .7em;
     margin-top: -.9em;
     border: none;
-    width: 4em;
-    height: 2em;
+    width: var(--thumb-width);
+    height: var(--thumb-height);
     border-radius: .5em;
     box-shadow: -.125em 0 .25em #928886,inset -1px 0 1px #fff;
     background: radial-gradient(#ebe1e0 10%,rgba(235,225,224,.2) 10%,rgba(235,225,224,0) 72%) 50% 50% no-repeat,radial-gradient(at 100% 50%,#e9dfde,#eae1de 71%,transparent 71%) 2.5em 50% no-repeat,linear-gradient(90deg,#e9dfde,#d0c8c6) 100% 50% no-repeat,radial-gradient(at 0 50%,#d0c6c5,#c6baba 71%,transparent 71%) .75em 50% no-repeat,linear-gradient(90deg,#e3d9d8,#d0c6c5) 0 50% no-repeat,linear-gradient(#cdc0c0,#fcf5ef,#fcf5ef,#cdc0c0);
@@ -128,8 +130,8 @@
 .mixer .trackstrip .track .fader input[type=range]::-moz-range-thumb {
     font-size: .7em;
     border: none;
-    width: 4em;
-    height: 2em;
+    width: var(--thumb-width);
+    height: var(--thumb-height);
     border-radius: .5em;
     box-shadow: -.125em 0 .25em #928886,inset -1px 0 1px #fff;
     background: radial-gradient(#ebe1e0 10%,rgba(235,225,224,.2) 10%,rgba(235,225,224,0) 72%) 50% 50% no-repeat,radial-gradient(at 100% 50%,#e9dfde,#eae1de 71%,transparent 71%) 2.5em 50% no-repeat,linear-gradient(90deg,#e9dfde,#d0c8c6) 100% 50% no-repeat,radial-gradient(at 0 50%,#d0c6c5,#c6baba 71%,transparent 71%) .75em 50% no-repeat,linear-gradient(90deg,#e3d9d8,#d0c6c5) 0 50% no-repeat,linear-gradient(#cdc0c0,#fcf5ef,#fcf5ef,#cdc0c0);
@@ -139,8 +141,8 @@
 .mixer .trackstrip .track .fader input[type=range]::-ms-thumb {
     font-size: .7em;
     border: none;
-    width: 4em;
-    height: 2em;
+    width: var(--thumb-width);
+    height: var(--thumb-height);
     border-radius: .5em;
     box-shadow: -.125em 0 .25em #928886,inset -1px 0 1px #fff;
     background: radial-gradient(#ebe1e0 10%,rgba(235,225,224,.2) 10%,rgba(235,225,224,0) 72%) 50% 50% no-repeat,radial-gradient(at 100% 50%,#e9dfde,#eae1de 71%,transparent 71%) 2.5em 50% no-repeat,linear-gradient(90deg,#e9dfde,#d0c8c6) 100% 50% no-repeat,radial-gradient(at 0 50%,#d0c6c5,#c6baba 71%,transparent 71%) .75em 50% no-repeat,linear-gradient(90deg,#e3d9d8,#d0c6c5) 0 50% no-repeat,linear-gradient(#cdc0c0,#fcf5ef,#fcf5ef,#cdc0c0);
