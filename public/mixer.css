@@ -5,7 +5,7 @@ html, body {
 
 .mixer {
     --track-width: 51px;
-    --fader-height: 300px;
+    --fader-height: 250px;
     --fader-width: calc(var(--track-width) - 12px);
     --thumb-width: 4em;
     --thumb-height: 2em;
@@ -21,7 +21,7 @@ html, body {
     user-select: none;
 }
 
-@media (min-width: 361px) {
+@media (min-width: 361px) and (min-height: 721px) {
     .mixer {
         transform-origin: left top;
         transform: scale(1.5);
