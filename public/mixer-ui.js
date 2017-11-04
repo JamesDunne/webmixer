@@ -125,6 +125,8 @@ class MixerUI {
             // Set level label:
             let levelLabel = node.querySelector(".label span.level");
             levelLabel.innerText = levelFormat(track.level);
+            // Click level label to reset to 0:
+            levelLabel.addEventListener("click", faderResetHandler);
 
             // Bind fader events:
             let faderNode = trackNode.querySelector(".fader input[type=range]");
