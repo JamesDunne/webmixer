@@ -36,7 +36,7 @@
                     <span class="level right">0.00dB</span>
                 </div>
                 <div class="fader">
-                    <input type="range" min="0" max="1.6" step="0.001" value="1.25">
+                    <input type="range" min="0" max="1.0" step="any" value="0.787">
                 </div>
             </div>
     	</template>
@@ -71,20 +71,27 @@
             pan: +0.33
         }
     ]);
+    
+    const maxGain = 3.0;
 
-    const faderCenter = 1.25;
-    const faderExponent = 3.0;
-
-    function fader_to_dB(fader) {
-        fader = Math.pow(fader / faderCenter, faderExponent);
-        let dB = 20.0 * Math.log10(fader);
-        return dB;
+    // Math.pow((6.0 * Math.log(g) / Math.log(2.0) + 192.0) / 198.0, 8.0)
+    function dB_to_fader(dB) {
+        if (dB == -Infinity) return 0.0;
+        let gain = Math.pow(10.0, dB / 20.0) * 2.0 / maxGain;
+        let fader = Math.pow((6.0 * Math.log(gain) / Math.log(2.0) + 192.0) / 198.0, 8.0);
+        return fader;
     }
 
-    function dB_to_fader(dB) {
-        let mult = Math.pow(10.0, dB / 20.0);
-        let fader = Math.pow(mult, 1.0 / faderExponent) * faderCenter;
-        return fader;
+    const faderCenter = dB_to_fader(0);
+    const faderMax = 1.0;
+
+    // Math.exp(((Math.pow(fader, 1.0 / 8.0) * 198.0) - 192.0) / 6.0 * Math.log(2.0))
+    function fader_to_dB(fader) {
+        if (fader == 0.0) return -Infinity;
+        if (fader == faderCenter) return 0;
+        let gain = Math.exp(((Math.pow(fader, 1.0 / 8.0) * 198.0) - 192.0) / 6.0 * Math.log(2.0)) * maxGain / 2.0;
+        let dB = 20.0 * Math.log10(gain);
+        return dB;
     }
 
     function faderByTrack(name) {
@@ -177,7 +184,7 @@
 
         let fader = trackNode.querySelector(".fader input[type=range]");
         fader.min = 0;
-        fader.max = 1.5740;
+        fader.max = faderMax;
         fader.value = dB_to_fader(track.level);
         fader.addEventListener("dblclick", e => {
             e.target.value = faderCenter;
