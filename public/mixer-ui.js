@@ -1,35 +1,35 @@
 
-const maxGain = 3.0;
+// Convert from dB to gain multiplier:
+function dB_to_gain(dB) {
+    return Math.pow(10.0, dB / 20.0);
+}
 
-// Math.pow((6.0 * Math.log(g) / Math.log(2.0) + 192.0) / 198.0, 8.0)
+// Convert from gain multiplier to dB:
+function gain_to_dB(gain) {
+    return 20.0 * Math.log10(gain);
+}
+
+// Define maximum gain at the top of the fader range [0..1]:
+const faderMaxGain = dB_to_gain(12);
+
+// Convert from dB to fader range [0..1]:
 function dB_to_fader(dB) {
     if (dB == -Infinity) return 0.0;
-    let gain = Math.pow(10.0, dB / 20.0) * 2.0 / maxGain;
+    let gain = dB_to_gain(dB) * 2.0 / faderMaxGain;
     let fader = Math.pow((6.0 * Math.log(gain) / Math.log(2.0) + 192.0) / 198.0, 8.0);
     return fader;
 }
 
-const faderCenter = dB_to_fader(0);
-const faderMax = 1.0;
+// Define a zero-value on the fader [0..1] scale:
+const faderZero = dB_to_fader(0);
 
-// Math.exp(((Math.pow(fader, 1.0 / 8.0) * 198.0) - 192.0) / 6.0 * Math.log(2.0))
+// Convert from fader range [0..1] to dB:
 function fader_to_dB(fader) {
     if (fader == 0.0) return -Infinity;
-    if (Math.abs(fader - faderCenter) < 1e-6) return 0;
-    let gain = Math.exp(((Math.pow(fader, 1.0 / 8.0) * 198.0) - 192.0) / 6.0 * Math.log(2.0)) * maxGain / 2.0;
-    let dB = 20.0 * Math.log10(gain);
+    if (Math.abs(fader - faderZero) < 1e-6) return 0;
+    let gain = Math.exp(((Math.pow(fader, 1.0 / 8.0) * 198.0) - 192.0) / 6.0 * Math.log(2.0)) * faderMaxGain / 2.0;
+    let dB = gain_to_dB(gain);
     return dB;
-}
-
-function faderByTrack(name) {
-    return document.querySelector("div.track[data-track="+name+"] input.level[type=range]");
-}
-
-function trackFromDescendent(el) {
-    let trackEl = el.closest("div.track");
-    let trackName = trackEl.getAttribute("data-track");
-    let track = mixer.track(trackName);
-    return track;
 }
 
 function withExactDigits(value, maxDigits) {
@@ -57,33 +57,61 @@ function levelFormat(dB) {
     return `${withExactDigits(dB,3)} dB`;
 }
 
-function faderInputHandler(el, track) {
-    let fader = el.value;
-    let dB = fader_to_dB(fader);
-    track.level = dB;
-
-    // Update level label:
-    let trackEl = el.closest("div.track");
-    let levelLabel = trackEl.querySelector(".label span.level");
-    levelLabel.innerText = levelFormat(track.level)
-}
-
-function muteInputHandler(el, track) {
-    let mute = el.checked;
-    track.mute = mute;
-}
-
-function soloInputHandler(el, track) {
-    let solo = el.checked;
-    track.solo = solo;
-}
-
 class MixerUI {
     constructor(mixer) {
         this.mixer = mixer;
     }
 
+    trackFromDescendent(el) {
+        let trackEl = el.closest("div.track");
+        let trackName = trackEl.getAttribute("data-track");
+        let track = this.mixer.track(trackName);
+        return track;
+    }
+
+    faderInputHandler(e) {
+        let el = e.target;
+        let track = this.trackFromDescendent(el);
+
+        let fader = el.value;
+        let dB = fader_to_dB(fader);
+        track.level = dB;
+
+        // Update level label:
+        let trackEl = el.closest("div.track");
+        let levelLabel = trackEl.querySelector(".label span.level");
+        levelLabel.innerText = levelFormat(track.level)
+    }
+
+    muteInputHandler(e) {
+        let el = e.target;
+        let track = this.trackFromDescendent(el);
+
+        let mute = el.checked;
+        track.mute = mute;
+    }
+
+    soloInputHandler(e) {
+        let el = e.target;
+        let track = this.trackFromDescendent(el);
+
+        let solo = el.checked;
+        track.solo = solo;
+    }
+
+    faderResetHandler(e) {
+        let el = e.target;
+
+        el.value = faderZero;
+        this.faderInputHandler(e);
+    }
+
     init() {
+        let faderInputHandler = this.faderInputHandler.bind(this);
+        let faderResetHandler = this.faderResetHandler.bind(this);
+        let muteInputHandler = this.muteInputHandler.bind(this);
+        let soloInputHandler = this.soloInputHandler.bind(this);
+
         // Stamp template per each track:
         let trackTemplate = document.getElementById("trackTemplate");
         let trackStrip = document.querySelector(".mixer .trackstrip");
@@ -104,21 +132,18 @@ class MixerUI {
 
             let fader = trackNode.querySelector(".fader input[type=range]");
             fader.min = 0;
-            fader.max = faderMax;
+            fader.max = 1.0;
             fader.value = dB_to_fader(track.level);
-            fader.addEventListener("dblclick", e => {
-                e.target.value = faderCenter;
-                faderInputHandler(e.target, trackFromDescendent(e.target));
-            });
-            fader.addEventListener("input", e => faderInputHandler(e.target, trackFromDescendent(e.target)));
+            fader.addEventListener("dblclick", faderResetHandler);
+            fader.addEventListener("input", faderInputHandler);
 
             let mute = trackNode.querySelector(".mute-button input[type=checkbox]");
             mute.checked = track.mute;
-            mute.addEventListener("change", e => muteInputHandler(e.target, trackFromDescendent(e.target)));
+            mute.addEventListener("change", muteInputHandler);
 
             let solo = trackNode.querySelector(".solo-button input[type=checkbox]");
             solo.checked = track.solo;
-            solo.addEventListener("change", e => soloInputHandler(e.target, trackFromDescendent(e.target)));
+            solo.addEventListener("change", soloInputHandler);
 
             trackStrip.appendChild(node);
         });

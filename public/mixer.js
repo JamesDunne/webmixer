@@ -22,6 +22,9 @@ class Mixer {
 
         // Connect mixer master out to destination:
         mixer.master.outputNode.connect(ac.destination);
+
+        // Initialize solo/mute for all tracks:
+        mixer.applySolo();
     }
 
     track(name) {
