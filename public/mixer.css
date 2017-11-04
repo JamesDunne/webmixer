@@ -19,6 +19,7 @@ html, body {
     font-size: 12pt;
     font-family: sans-serif;
     user-select: none;
+    touch-action: none;
 }
 
 @media (min-width: 361px) and (min-height: 721px) {
