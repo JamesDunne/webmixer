@@ -30,6 +30,15 @@ class Track {
         this.setLevel();
     }
 
+    fireEvent(fn, value) {
+        if (!(fn instanceof Function)) return;
+        try {
+            fn(value);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     get inputNode() {
         return this.soloMuteNode;
     }
@@ -43,6 +52,7 @@ class Track {
     }
     set pan(value) {
         this._pan = value;
+        this.fireEvent(this.panChanged, this._pan);
         this.setPan();
     }
     setPan() {
@@ -50,12 +60,19 @@ class Track {
         this.pannerNode.pan.value = this._pan;
         this.setLevel();
     }
+    get panChanged() {
+        return this._panChanged;
+    }
+    set panChanged(fn) {
+        this._panChanged = fn;
+    }
 
     get level() {
         return this._level;
     }
     set level(value) {
         this._level = value;
+        this.fireEvent(this.levelChanged, this._level);
         this.setLevel();
     }
     setLevel() {
@@ -65,12 +82,19 @@ class Track {
         dB += Math.abs(this._pan) * -6.0;
         this.gainNode.gain.value = Math.pow(10.0, dB / 20.0);
     }
+    get levelChanged() {
+        return this._levelChanged;
+    }
+    set levelChanged(fn) {
+        this._levelChanged = fn;
+    }
 
     get mute() {
         return this._mute;
     }
     set mute(value) {
         this._mute = value;
+        this.fireEvent(this.muteChanged, this._mute);
         this.setMute();
     }
     setMute() {
@@ -81,17 +105,30 @@ class Track {
         }
         this.muteNode.gain.value = this._mute ? 0 : 1;
     }
+    get muteChanged() {
+        return this._muteChanged;
+    }
+    set muteChanged(fn) {
+        this._muteChanged = fn;
+    }
 
     get solo() {
         return this._solo;
     }
     set solo(value) {
         this._solo = value;
+        this.fireEvent(this.soloChanged, this._solo);
         this.setSolo();
     }
     setSolo() {
         if (!this.mixer) return;
         this.mixer.applySolo();
+    }
+    get soloChanged() {
+        return this._soloChanged;
+    }
+    set soloChanged(fn) {
+        this._soloChanged = fn;
     }
 
     get soloMute() {

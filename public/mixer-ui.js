@@ -76,11 +76,6 @@ class MixerUI {
         let fader = el.value;
         let dB = fader_to_dB(fader);
         track.level = dB;
-
-        // Update level label:
-        let trackEl = el.closest("div.track");
-        let levelLabel = trackEl.querySelector(".label span.level");
-        levelLabel.innerText = levelFormat(track.level)
     }
 
     muteInputHandler(e) {
@@ -101,9 +96,9 @@ class MixerUI {
 
     faderResetHandler(e) {
         let el = e.target;
+        let track = this.trackFromDescendent(el);
 
-        el.value = faderZero;
-        this.faderInputHandler(e);
+        track.level = 0;
     }
 
     init() {
@@ -119,31 +114,43 @@ class MixerUI {
             // Clone template:
             var node = document.importNode(trackTemplate.content, true);
 
-            // Update name label:
-            let nameLabel = node.querySelector(".label span.name");
-            nameLabel.innerText = track.name;
-
-            // Update level label:
-            let levelLabel = node.querySelector(".label span.level");
-            levelLabel.innerText = levelFormat(track.level)
-
+            // Set data-track attribute:
             let trackNode = node.querySelector("div.track");
             trackNode.setAttribute("data-track", track.name);
 
-            let fader = trackNode.querySelector(".fader input[type=range]");
-            fader.min = 0;
-            fader.max = 1.0;
-            fader.value = dB_to_fader(track.level);
-            fader.addEventListener("dblclick", faderResetHandler);
-            fader.addEventListener("input", faderInputHandler);
+            // Set name label:
+            let nameLabel = node.querySelector(".label span.name");
+            nameLabel.innerText = track.name;
 
-            let mute = trackNode.querySelector(".mute-button input[type=checkbox]");
-            mute.checked = track.mute;
-            mute.addEventListener("change", muteInputHandler);
+            // Set level label:
+            let levelLabel = node.querySelector(".label span.level");
+            levelLabel.innerText = levelFormat(track.level);
 
-            let solo = trackNode.querySelector(".solo-button input[type=checkbox]");
-            solo.checked = track.solo;
-            solo.addEventListener("change", soloInputHandler);
+            // Bind fader events:
+            let faderNode = trackNode.querySelector(".fader input[type=range]");
+            faderNode.min = 0;
+            faderNode.max = 1.0;
+            faderNode.value = dB_to_fader(track.level);
+            faderNode.addEventListener("dblclick", faderResetHandler);
+            faderNode.addEventListener("input", faderInputHandler);
+            track.levelChanged = (value) => {
+                faderNode.value = dB_to_fader(value);
+                levelLabel.innerText = levelFormat(value);
+            };
+
+            let muteNode = trackNode.querySelector(".mute-button input[type=checkbox]");
+            muteNode.checked = track.mute;
+            muteNode.addEventListener("change", muteInputHandler);
+            track.muteChanged = (value) => {
+                muteNode.checked = value;
+            };
+
+            let soloNode = trackNode.querySelector(".solo-button input[type=checkbox]");
+            soloNode.checked = track.solo;
+            soloNode.addEventListener("change", soloInputHandler);
+            track.soloChanged = (value) => {
+                soloNode.checked = value;
+            };
 
             trackStrip.appendChild(node);
         });
