@@ -10,8 +10,14 @@ class Mixer {
 
     createNodes(ac) {
         this.master.createNodes(ac);
+
         // Connect mixer master out to destination:
         mixer.master.outputNode.connect(ac.destination);
+
+        // Create track FX chains:
+        for (let track of this._tracks) {
+            track.createNodes(ac);
+        }
     }
 
     track(name) {

@@ -155,6 +155,9 @@
     // add an AudioContext
     let ac = new AudioContext();
 
+    // Create mixer FX chain:
+    mixer.createNodes(ac);
+
     // Find out <audio> element:
     let mcAudio = document.getElementById("mc");
 
@@ -183,9 +186,6 @@
     }
     splitter.channelInterpretation = "discrete";
     mcSource.connect(splitter);
-
-    // Create mixer FX chain:
-    mixer.createNodes(ac);
 
     // Stamp template per each track:
     let trackTemplate = document.getElementById("trackTemplate");
@@ -228,9 +228,6 @@
 
     let c = 0;
     for (let track of mixer.tracks) {
-        // Create track FX chain:
-        track.createNodes(ac);
-
         // Connect media output to track input:
         let merger = ac.createChannelMerger(2);
         merger.channelCountMode = "explicit";
