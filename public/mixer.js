@@ -9,15 +9,19 @@ class Mixer {
     }
 
     createNodes(ac) {
+        // Create master track:
         this.master.createNodes(ac);
+
+        // Connect tracks to master input:
+        for (let track of this._tracks) {
+            // Create track FX chain:
+            track.createNodes(ac);
+            // Connect track FX chain to master track's input:
+            track.outputNode.connect(mixer.master.inputNode);
+        }
 
         // Connect mixer master out to destination:
         mixer.master.outputNode.connect(ac.destination);
-
-        // Create track FX chains:
-        for (let track of this._tracks) {
-            track.createNodes(ac);
-        }
     }
 
     track(name) {

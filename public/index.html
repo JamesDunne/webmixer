@@ -242,9 +242,6 @@
             c++;
         }
         merger.connect(track.inputNode);
-
-        // Connect track FX chain to master track's input:
-        track.outputNode.connect(mixer.master.inputNode);
     }
     mixer.applySolo();
 </script>
