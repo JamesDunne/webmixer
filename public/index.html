@@ -106,12 +106,29 @@
         return track;
     }
 
-    function levelFormat(dB) {
-        let lbl = dB.toPrecision(3);
-        if (lbl == "-Infinity") {
-            lbl = "-inf";
+    function withExactDigits(value, maxDigits) {
+        let s = value.toPrecision(maxDigits);
+        if (s == "-Infinity") {
+            s = "-inf";
+        } else {
+            // Only show maxDigits total digits including 0s:
+            let digits = 0, n = 0;
+            for (let c of s) {
+                if (c >= '0' && c <= '9') {
+                    digits++;
+                    if (digits >= maxDigits) {
+                        s = s.slice(0, n+1);
+                        break;
+                    }
+                }
+                n++;
+            }
         }
-        return `${lbl} dB`;
+        return s;
+    }
+
+    function levelFormat(dB) {
+        return `${withExactDigits(dB,3)} dB`;
     }
 
     function faderInputHandler(el, track) {
