@@ -71,7 +71,7 @@
             pan: +0.33
         }
     ]);
-    
+
     const maxGain = 3.0;
 
     // Math.pow((6.0 * Math.log(g) / Math.log(2.0) + 192.0) / 198.0, 8.0)
@@ -88,7 +88,7 @@
     // Math.exp(((Math.pow(fader, 1.0 / 8.0) * 198.0) - 192.0) / 6.0 * Math.log(2.0))
     function fader_to_dB(fader) {
         if (fader == 0.0) return -Infinity;
-        if (fader == faderCenter) return 0;
+        if (Math.abs(fader - faderCenter) < 1e-6) return 0;
         let gain = Math.exp(((Math.pow(fader, 1.0 / 8.0) * 198.0) - 192.0) / 6.0 * Math.log(2.0)) * maxGain / 2.0;
         let dB = 20.0 * Math.log10(gain);
         return dB;
