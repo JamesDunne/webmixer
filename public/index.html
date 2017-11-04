@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="mixer.css"/>
 </head>
 <body>
-<audio id="mc" controls controlsList="nodownload" style="width: calc(52px * 7)">
+<audio id="mc" controls controlsList="nodownload" style="width: calc(52px * 7); display: block;">
     <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
 </audio>
 <ul>
@@ -158,7 +158,12 @@
 
     // TODO: would be nice to detect channel count from source.
     let splitter = ac.createChannelSplitter(8);
-    splitter.channelCountMode = "explicit";
+    try {
+        // For older spec implementations:
+        splitter.channelCountMode = "max";
+    } catch (e) {
+        splitter.channelCountMode = "explicit";
+    }
     splitter.channelInterpretation = "discrete";
     mcSource.connect(splitter);
 

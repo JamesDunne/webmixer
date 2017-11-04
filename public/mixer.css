@@ -43,6 +43,7 @@
     width: 100%;
     float: left;
     user-select: text;
+    line-height: 1em;
 }
 
 .center {
