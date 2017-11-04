@@ -1,5 +1,7 @@
 :root {
     --fader-height: 300px;
+    --fader-width: 40px;
+    --track-width: calc(var(--fader-width) + 12px);
 }
 
 .mixer {
@@ -13,14 +15,14 @@
 }
 
 .mixer .trackstrip {
-    height: calc(var(--fader-height) + 52px); /* 452px */
+    height: calc(var(--fader-height) + 56px); /* 452px */
     position: relative;
     display: block;
     float: left;
 }
 
 .mixer .trackstrip .track {
-    width: 42px;
+    width: var(--track-width);
     position: relative;
     float: left;
     display: block;
@@ -57,7 +59,7 @@
 
 /* FADER */
 .mixer .trackstrip .track .fader {
-    height: 30px;
+    height: var(--fader-width);
     display: block;
     float: left;
     -ms-transform: rotate(270deg);
@@ -65,7 +67,7 @@
     transform: rotate(270deg);
     position: absolute;
     top: calc(var(--fader-height) * 0.5 + 32px); /* 232px */
-    left: calc(var(--fader-height) * -0.5 + 18.8px); /* -180.2px */
+    left: calc(var(--fader-height) * -0.5 + var(--fader-width) * 0.5 + 10px); /* -180.2px */
 }
 
 .mixer .trackstrip .track .fader input[type=range] {
@@ -92,7 +94,7 @@
 }
 
 .mixer .trackstrip .track .fader input[type=range]::-moz-range-track {
-    width: 390px;
+    width: calc(var(--fader-height) - 10px);
     height: .1em;
     border-radius: .1875em;
     background: #15181b
@@ -191,7 +193,7 @@
 
 /* BUTTONS */
 .mixer .trackstrip .track .button-container {
-    margin: 4px 4px 4px 4.5px;
+    margin: 4px 4px 4px calc(4px + var(--fader-width) * 0.5 - 14px);
 }
 
 /* MUTE */
