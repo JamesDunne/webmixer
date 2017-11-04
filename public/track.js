@@ -5,6 +5,7 @@ class Track {
         this.channels = opts.channels || 1;
         this._pan = opts.pan || 0;
         this._level = opts.level || 0;
+        this._level_offset = opts.level_offset || 0;
         this._mute = opts.mute || false;
         this._solo = opts.solo || false;
         this._soloMute = false;
@@ -59,7 +60,7 @@ class Track {
     }
     setLevel() {
         if (!this.gainNode) return;
-        let dB = this._level;
+        let dB = this._level + this._level_offset;
         // Decrease apparent level depending on pan:
         dB += Math.abs(this._pan) * -6.0;
         this.gainNode.gain.value = Math.pow(10.0, dB / 20.0);

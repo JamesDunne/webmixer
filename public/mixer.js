@@ -1,6 +1,6 @@
 class Mixer {
     constructor() {
-        this._master = new Track(this, {name:"MASTER"});
+        this._master = new Track(this, {name:"MASTER", level_offset: 6});
         this._tracks = [];
     }
 
@@ -15,6 +15,9 @@ class Mixer {
     }
 
     track(name) {
+        if (name == "MASTER") {
+            return this.master;
+        }
         return this._tracks.find(tr => tr.name == name);
     }
 

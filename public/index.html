@@ -72,7 +72,9 @@
         }
     ]);
 
+    const faderCenter = 1.25;
     const faderExponent = 3.0;
+
     function fader_to_dB(fader) {
         fader = Math.pow(fader / faderCenter, faderExponent);
         let dB = 20.0 * Math.log10(fader);
@@ -125,14 +127,40 @@
         track.solo = solo;
     }
 
+    // add an AudioContext
+    let ac = new AudioContext();
+
     // Find out <audio> element:
     let mcAudio = document.getElementById("mc");
-    const faderCenter = 1.25;
+
+    // Wire up click handlers on links:
+    document.querySelectorAll(".switch").forEach(
+        el => el.addEventListener("click", e => {
+            e.preventDefault();
+            let href = e.target.getAttribute("href");
+            mcAudio.src = href;
+            mcAudio.play();
+            return false;
+        })
+    );
+
+    let mcSource = ac.createMediaElementSource(mcAudio);
+    mcSource.channelCountMode = "explicit";
+    mcSource.channelInterpretation = "discrete";
+
+    // TODO: would be nice to detect channel count from source.
+    let splitter = ac.createChannelSplitter(8);
+    splitter.channelCountMode = "explicit";
+    splitter.channelInterpretation = "discrete";
+    mcSource.connect(splitter);
+
+    // Create mixer FX chain:
+    mixer.createNodes(ac);
 
     // Stamp template per each track:
     let trackTemplate = document.getElementById("trackTemplate");
     let trackStrip = document.querySelector(".mixer .trackstrip");
-    mixer.tracks.forEach(track => {
+    [...mixer.tracks, mixer.master].forEach(track => {
         // Clone template:
         var node = document.importNode(trackTemplate.content, true);
 
@@ -167,33 +195,6 @@
 
         trackStrip.appendChild(node);
     });
-
-    // Wire up click handlers on links:
-    document.querySelectorAll(".switch").forEach(
-        el => el.addEventListener("click", e => {
-            e.preventDefault();
-            let href = e.target.getAttribute("href");
-            mcAudio.src = href;
-            mcAudio.play();
-            return false;
-        })
-    );
-
-    // add an AudioContext
-    let ac = new AudioContext();
-    let mcSource = ac.createMediaElementSource(mcAudio);
-    mcSource.channelCountMode = "explicit";
-    mcSource.channelInterpretation = "discrete";
-
-    // TODO: would be nice to detect channel count from source.
-    let splitter = ac.createChannelSplitter(8);
-    splitter.channelCountMode = "explicit";
-    splitter.channelInterpretation = "discrete";
-    mcSource.connect(splitter);
-
-    // Create mixer FX chain:
-    mixer.createNodes(ac);
-    mixer.master.level = 6;
 
     let c = 0;
     for (let track of mixer.tracks) {
