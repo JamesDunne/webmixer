@@ -75,6 +75,10 @@ class Track {
     }
     setMute() {
         if (!this.muteNode) return;
+        if (this._solo) {
+            this.muteNode.gain.value = 1;
+            return;
+        }
         this.muteNode.gain.value = this._mute ? 0 : 1;
     }
 
@@ -99,6 +103,11 @@ class Track {
     }
     setSoloMute() {
         if (!this.soloMuteNode) return;
+        if (this._solo) {
+            this.muteNode.gain.value = 1;
+        } else {
+            this.setMute();
+        }
         this.soloMuteNode.gain.value = this._soloMute ? 0 : 1;
     }
 }
