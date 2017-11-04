@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="mixer.css"/>
 </head>
 <body>
-<audio id="mc" controls>
+<audio id="mc" controls style="width: calc(52px * 7)">
     <source src="/05%20-%20Hash%20Pipe.opus" type="audio/ogg">
 </audio>
 <ul>
@@ -46,6 +46,7 @@
 <script src="track.js"></script>
 <script>
     let mixer = new Mixer();
+
     mixer.addTracks([
         {
             name: "Drums",
