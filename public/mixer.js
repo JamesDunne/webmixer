@@ -1,6 +1,6 @@
 class Mixer {
     constructor() {
-        this._master = new Track(this, {name:"MASTER", level_offset: 6});
+        this._master = new Track(this, {name:"MASTER", level_offset: 0});
         this._tracks = [];
     }
 

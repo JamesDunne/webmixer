@@ -5,13 +5,13 @@
     <link rel="stylesheet" href="mixer.css"/>
 </head>
 <body>
-<ul>
-    <li><a href="05%20-%20Hash%20Pipe.opus" class="switch">05 - Hash Pipe</a></li>
-    <li><a href="09%20-%20Kids.opus" class="switch">09 - Kids</a></li>
-</ul>
+<ul id="songs"></ul>
+<template id="songlink">
+    <li><a href="#HREF" class="switch">NAME</a></li>
+</template>
 <div class="mixer">
     <audio id="mc" controls controlsList="nodownload">
-        <source src="05%20-%20Hash%20Pipe.opus" type="audio/ogg">
+        <source type="audio/ogg">
     </audio>
     <div class="trackstrip"></div>
 </div>
@@ -52,87 +52,79 @@
     // Create a mixer:
     let mixer = new Mixer();
 
-    // Add default tracks to mixer:
-    mixer.addTracks([
-        {
-            name: "Drums",
-            channels: 2
-        },
-        {
-            name: "Bass"
-        },
-        {
-            name: "Gtr MG",
-            pan: -0.8
-        },
-        {
-            name: "Gtr JD",
-            pan: +0.8
-        },
-        {
-            name: "Vox MG",
-            pan: 0
-        },
-        {
-            name: "Vox JD",
-            pan: +0.33
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'mix.json', true);
+    xhr.responseType = 'json';
+    xhr.onload = function (e) {
+        let mix = xhr.response;
+
+        // Add default tracks to mixer:
+        mixer.addTracks(mix.tracks);
+
+        // Bind mixer to AudioContext:
+        mixer.createNodes(ac);
+
+        // Initialize mixer UI:
+        new MixerUI(mixer).init();
+
+        // Find our <audio> element:
+        let mcAudio = document.getElementById("mc");
+        let mcSource = ac.createMediaElementSource(mcAudio);
+        mcSource.channelCountMode = "explicit";
+        mcSource.channelInterpretation = "discrete";
+
+        // TODO: would be nice to detect channel count from source.
+        let splitter = ac.createChannelSplitter(8);
+        try {
+            // For older spec implementations:
+            splitter.channelCountMode = "max";
+        } catch (e) {
+            splitter.channelCountMode = "explicit";
         }
-    ]);
+        splitter.channelInterpretation = "discrete";
+        mcSource.connect(splitter);
 
-    // Bind mixer to AudioContext:
-    mixer.createNodes(ac);
+        // Split multichannel audio source into stereo/mono tracks:
+        let c = 0;
+        for (let track of mixer.tracks) {
+            // Connect media output to track input:
+            let merger = ac.createChannelMerger(2);
+            merger.channelCountMode = "explicit";
+            merger.channelInterpretation = "discrete";
 
-    // Initialize mixer UI:
-    new MixerUI(mixer).init();
-
-    // Find our <audio> element:
-    let mcAudio = document.getElementById("mc");
-    let mcSource = ac.createMediaElementSource(mcAudio);
-    mcSource.channelCountMode = "explicit";
-    mcSource.channelInterpretation = "discrete";
-
-    // TODO: would be nice to detect channel count from source.
-    let splitter = ac.createChannelSplitter(8);
-    try {
-        // For older spec implementations:
-        splitter.channelCountMode = "max";
-    } catch (e) {
-        splitter.channelCountMode = "explicit";
-    }
-    splitter.channelInterpretation = "discrete";
-    mcSource.connect(splitter);
-
-    // Split multichannel audio source into stereo/mono tracks:
-    let c = 0;
-    for (let track of mixer.tracks) {
-        // Connect media output to track input:
-        let merger = ac.createChannelMerger(2);
-        merger.channelCountMode = "explicit";
-        merger.channelInterpretation = "discrete";
-
-        if (track.channels == 2) {
-            // Assume stereo, so copy left/right channels independently:
-            splitter.connect(merger, c++, 0);
-            splitter.connect(merger, c++, 1);
-        } else {
-            // Assume mono, so copy single input channel to both output channels:
-            splitter.connect(merger, c, 0);
-            splitter.connect(merger, c, 1);
-            c++;
+            if (track.channels == 2) {
+                // Assume stereo, so copy left/right channels independently:
+                splitter.connect(merger, c++, 0);
+                splitter.connect(merger, c++, 1);
+            } else {
+                // Assume mono, so copy single input channel to both output channels:
+                splitter.connect(merger, c, 0);
+                splitter.connect(merger, c, 1);
+                c++;
+            }
+            merger.connect(track.inputNode);
         }
-        merger.connect(track.inputNode);
-    }
 
-    // Wire up click handlers on links:
-    document.querySelectorAll(".switch").forEach(
-        el => el.addEventListener("click", e => {
-            e.preventDefault();
-            let href = e.target.getAttribute("href");
-            mcAudio.src = href;
-            mcAudio.play();
-            return false;
-        })
-    );
+        // Create song links and wire up click handlers:
+        let songsNode = document.getElementById("songs");
+        let songlinkTemplate = document.getElementById('songlink');
+        for (let song of mix.songs) {
+            let node = document.importNode(songlinkTemplate.content, true);
+            let a = node.querySelector("a");
+            a.href = song;
+            a.innerText = decodeURIComponent(song);
+            a.addEventListener("click", e => {
+                e.preventDefault();
+                let href = e.target.getAttribute("href");
+                mcAudio.src = href;
+                mcAudio.play();
+                return false;
+            });
+            songsNode.appendChild(node);
+        }
+    };
+    xhr.send(null);
+
 </script>
 </body>
 </html>
