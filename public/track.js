@@ -66,7 +66,7 @@ class Track {
     get inGain() { return this._in_gain; }
     applyInGain()  {
         if (!this.inGainNode) return;
-        this.inGainNode.value = dB_to_gain(this._in_gain.value);
+        this.inGainNode.gain.value = dB_to_gain(this._in_gain.value);
     }
 
     get mute() { return this._mute; }
