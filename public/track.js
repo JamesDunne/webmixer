@@ -1,42 +1,99 @@
+
+// Convert from dB to gain multiplier:
+function dB_to_gain(dB) {
+    return Math.pow(10.0, dB / 20.0);
+}
+
+// Convert from gain multiplier to dB:
+function gain_to_dB(gain) {
+    return 20.0 * Math.log10(gain);
+}
+
+class Parameter {
+    constructor(value, applyFn) {
+        if (!(applyFn instanceof Function)) throw 'applyFn is not an instance of Function!';
+        this.applyFn = applyFn;
+        this._value = value;
+        this._changed = [];
+    }
+
+    addChangedEvent(changedFn) {
+        if (!(changedFn instanceof Function)) throw 'changedFn is not an instance of Function!';
+        this._changed.push(changedFn);
+    }
+
+    get value() { return this._value; }
+    set value(value) {
+        this._value = value;
+        this.applyValue();
+        this.fireEvent();
+    }
+
+    applyValue() {
+        this.applyFn(this._value);
+    }
+
+    fireEvent() {
+        for (let changedFn of this._changed) {
+            changedFn(this._value);
+        }
+    }
+}
+
 class Track {
     constructor(mixer, opts) {
         this.mixer = mixer;
         this.name = opts.name;
         this.channels = opts.channels || 1;
-        this._pan = opts.pan || 0;
-        this._level = opts.level || 0;
-        this._level_offset = opts.level_offset || 0;
-        this._mute = opts.mute || false;
-        this._solo = opts.solo || false;
-        this._soloMute = false;
+
+        this.opts = opts;
+
+        this._in_gain = new Parameter(
+            opts.in_gain || 0,
+            this.applyInGain.bind(this)
+        );
+        this._pan = new Parameter(
+            opts.pan || 0,
+            this.applyPan.bind(this)
+        );
+        this._level = new Parameter(
+            opts.level || 0,
+            this.applyLevel.bind(this)
+        );
+        this._mute = new Parameter(
+            opts.mute || false,
+            this.applyMute.bind(this)
+        );
+        this._solo = new Parameter(
+            opts.solo || false,
+            this.applySolo.bind(this)
+        );
+        this._soloMute = new Parameter(
+            false,
+            this.applySoloMute.bind(this)
+        );
     }
 
     createNodes(ac /*: AudioContext */) {
         // Create default nodes:
         this.soloMuteNode = ac.createGain();
         this.muteNode = ac.createGain();
+        this.inGainNode = ac.createGain();
         this.pannerNode = ac.createStereoPanner();
-        this.gainNode = ac.createGain();
+        this.outGainNode = ac.createGain();
 
         // Connect nodes:
         this.soloMuteNode.connect(this.muteNode);
-        this.muteNode.connect(this.pannerNode);
-        this.pannerNode.connect(this.gainNode);
+        this.muteNode.connect(this.inGainNode);
+        this.inGainNode.connect(this.pannerNode);
+        this.pannerNode.connect(this.outGainNode);
 
         // Set properties:
-        this.setSoloMute();
-        this.setMute();
-        this.setPan();
-        this.setLevel();
-    }
-
-    fireEvent(fn, value) {
-        if (!(fn instanceof Function)) return;
-        try {
-            fn(value);
-        } catch (e) {
-            console.error(e);
-        }
+        this.applySoloMute();
+        this.applyMute();
+        this.applyInGain();
+        this.applyPan();
+        this.applyLevel();
     }
 
     get inputNode() {
@@ -44,107 +101,55 @@ class Track {
     }
 
     get outputNode() {
-        return this.gainNode;
+        return this.outGainNode;
     }
 
-    get pan() {
-        return this._pan;
+    get inGain() { return this._in_gain; }
+    applyInGain()  {
+        if (!this.inGainNode) return;
+        this.inGainNode.value = dB_to_gain(this._in_gain.value);
     }
-    set pan(value) {
-        this._pan = value;
-        this.fireEvent(this.panChanged, this._pan);
-        this.setPan();
-    }
-    setPan() {
+
+    get pan() { return this._pan; }
+    applyPan() {
         if (!this.pannerNode) return;
-        this.pannerNode.pan.value = this._pan;
-        this.setLevel();
-    }
-    get panChanged() {
-        return this._panChanged;
-    }
-    set panChanged(fn) {
-        this._panChanged = fn;
+        this.pannerNode.pan.value = this._pan.value;
+        this.applyLevel();
     }
 
-    get level() {
-        return this._level;
-    }
-    set level(value) {
-        this._level = value;
-        this.fireEvent(this.levelChanged, this._level);
-        this.setLevel();
-    }
-    setLevel() {
-        if (!this.gainNode) return;
-        let dB = this._level + this._level_offset;
+    get level() { return this._level; }
+    applyLevel() {
+        if (!this.outGainNode) return;
+        let dB = this._level.value;
         // Decrease apparent level depending on pan:
-        dB += Math.abs(this._pan) * -6.0;
-        this.gainNode.gain.value = Math.pow(10.0, dB / 20.0);
-    }
-    get levelChanged() {
-        return this._levelChanged;
-    }
-    set levelChanged(fn) {
-        this._levelChanged = fn;
+        dB += Math.abs(this._pan.value) * -6.0;
+        this.outGainNode.gain.value = dB_to_gain(dB);
     }
 
-    get mute() {
-        return this._mute;
-    }
-    set mute(value) {
-        this._mute = value;
-        this.fireEvent(this.muteChanged, this._mute);
-        this.setMute();
-    }
-    setMute() {
+    get mute() { return this._mute; }
+    applyMute() {
         if (!this.muteNode) return;
-        if (this._solo) {
+        if (this._solo.value) {
             this.muteNode.gain.value = 1;
             return;
         }
-        this.muteNode.gain.value = this._mute ? 0 : 1;
-    }
-    get muteChanged() {
-        return this._muteChanged;
-    }
-    set muteChanged(fn) {
-        this._muteChanged = fn;
+        this.muteNode.gain.value = this._mute.value ? 0 : 1;
     }
 
-    get solo() {
-        return this._solo;
-    }
-    set solo(value) {
-        this._solo = value;
-        this.fireEvent(this.soloChanged, this._solo);
-        this.setSolo();
-    }
-    setSolo() {
+    get solo() { return this._solo; }
+    applySolo() {
         if (!this.mixer) return;
         this.mixer.applySolo();
     }
-    get soloChanged() {
-        return this._soloChanged;
-    }
-    set soloChanged(fn) {
-        this._soloChanged = fn;
-    }
 
-    get soloMute() {
-        return this._soloMute;
-    }
-    set soloMute(value) {
-        this._soloMute = value;
-        this.setSoloMute();
-    }
-    setSoloMute() {
+    get soloMute() { return this._soloMute; }
+    applySoloMute() {
         if (!this.soloMuteNode) return;
-        if (this._solo) {
+        if (this._solo.value) {
             this.muteNode.gain.value = 1;
         } else {
-            this.setMute();
+            this.applyMute();
         }
-        this.soloMuteNode.gain.value = this._soloMute ? 0 : 1;
+        this.soloMuteNode.gain.value = this._soloMute.value ? 0 : 1;
     }
 }

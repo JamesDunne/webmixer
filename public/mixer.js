@@ -1,6 +1,6 @@
 class Mixer {
     constructor() {
-        this._master = new Track(this, {name:"MASTER", level_offset: 0});
+        this._master = new Track(this, {name:"MASTER"});
         this._tracks = [];
     }
 
@@ -43,23 +43,23 @@ class Mixer {
     }
 
     get anySoloedTracks() {
-        return this._tracks.some(tr => tr.solo);
+        return this._tracks.some(tr => tr.solo.value);
     }
 
     get unsoloedTracks() {
-        return this._tracks.filter(tr => !tr.solo);
+        return this._tracks.filter(tr => !tr.solo.value);
     }
 
     get soloedTracks() {
-        return this._tracks.filter(tr => tr.solo);
+        return this._tracks.filter(tr => tr.solo.value);
     }
 
     applySolo() {
         if (this.anySoloedTracks) {
-            this.unsoloedTracks.forEach(tr => tr.soloMute = true);
-            this.soloedTracks.forEach(tr => tr.soloMute = false);
+            this.unsoloedTracks.forEach(tr => tr.soloMute.value = true);
+            this.soloedTracks.forEach(tr => tr.soloMute.value = false);
         } else {
-            this._tracks.forEach(tr => tr.soloMute = false);
+            this._tracks.forEach(tr => tr.soloMute.value = false);
         }
     }
 }
