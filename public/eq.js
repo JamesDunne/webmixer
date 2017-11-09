@@ -29,8 +29,13 @@ class EQ {
         if (this.opts.makeupGain) {
             this.makeupGainNode = ac.createGain();
             this.makeupGainNode.gain.value = dB_to_gain(this.opts.makeupGain);
-            outputNode.connect(this.makeupGainNode);
+            if (outputNode) {
+                outputNode.connect(this.makeupGainNode);
+            }
             outputNode = this.makeupGainNode;
+            if (inputNode === null) {
+                inputNode = outputNode;
+            }
         }
 
         this.inputNode = inputNode;
