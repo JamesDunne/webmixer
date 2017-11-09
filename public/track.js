@@ -23,12 +23,8 @@ class Track {
             opts.in_gain || 0,
             this.applyInGain.bind(this)
         );
-        if (opts.eq) {
-            this._eq = new EQ(opts.eq);
-        }
-        if (opts.compressor) {
-            this._compressor = new Compressor(opts.compressor);
-        }
+        this._eq = new EQ(opts.eq || {});
+        this._compressor = new Compressor(opts.compressor || {});
         this._pan = new Parameter(
             opts.pan || 0,
             this.applyPan.bind(this)
@@ -45,12 +41,8 @@ class Track {
         this.mute.value = opts.mute || this.mute.value;
         this.solo.value = opts.solo || this.solo.value;
         this.inGain.value = opts.in_gain || this.inGain.value;
-        if (opts.eq) {
-            this.eq.applyOpts(opts.eq);
-        }
-        if (opts.compressor) {
-            this.compressor.applyOpts(opts.compressor);
-        }
+        this.eq.applyOpts(opts.eq || {});
+        this.compressor.applyOpts(opts.compressor || {});
         this.pan.value = opts.pan || this.pan.value;
         this.level.value = opts.level || this.level.value;
     }
@@ -70,11 +62,11 @@ class Track {
         // Connect optional components:
         let fxInNode = null;
         let fxOutNode = null;
-        if (this._eq) {
+        if (this.opts.eq) {
             fxInNode = this._eq.inputNode;
             fxOutNode = this._eq.outputNode;
         }
-        if (this._compressor) {
+        if (this.opts.compressor) {
             if (fxInNode === null) {
                 fxInNode = this._compressor.inputNode;
             } else {

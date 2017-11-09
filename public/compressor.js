@@ -52,6 +52,17 @@ class Compressor {
         );
     }
 
+    applyOpts(opts) {
+        this.opts = Object.assign(this.opts, opts);
+
+        this.threshold.value = opts.threshold || this.threshold.value;
+        this.ratio.value = opts.ratio || this.ratio.value;
+        this.knee.value = opts.knee || this.knee.value;
+        this.attack.value = opts.attack || this.attack.value;
+        this.release.value = opts.release || this.release.value;
+        this.makeupGain.value = opts.makeupGain || this.makeupGain.value;
+    }
+
     createNodes(ac) {
         this.compNode = ac.createDynamicsCompressor();
         this.makeupGainNode = ac.createGain();

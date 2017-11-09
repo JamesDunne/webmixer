@@ -4,6 +4,10 @@ class EQ {
         this.opts = opts;
     }
 
+    applyOpts(opts) {
+        this.opts = Object.assign(this.opts, opts);
+    }
+
     createNodes(ac) {
         let inputNode = null;
         let outputNode = null;
