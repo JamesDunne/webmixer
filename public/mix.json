@@ -1,5 +1,8 @@
 {
     "sourceChannels": 12,
+    "master": {
+        "level": 6
+    },
     "tracks": [
         {
             "name": "V:MG",
