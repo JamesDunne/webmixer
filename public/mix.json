@@ -3,7 +3,6 @@
     "tracks": [
         {
             "name": "V:MG",
-            "gain": -3,
             "eq": {
                 "bands": [
                     {"freq":130, "type": "highpass"},
@@ -13,6 +12,14 @@
                     {"freq":11132.201691, "gain":-2.802494, "q":0.805152},
                     {"freq":9600, "type": "lowpass"}
                 ]
+            },
+            "compressor": {
+                "threshold": -46.2,
+                "ratio": 1.6,
+                "knee": 1.7,
+                "attack": 0.0290,
+                "release": 0.051,
+                "makeupGain": 11.0
             },
             "pan": 0
         },
@@ -27,6 +34,14 @@
                     {"freq":12536.231766, "gain":-2.660482, "q":0.805152},
                     {"freq":9600, "type": "lowpass"}
                 ]
+            },
+            "compressor": {
+                "threshold": -32.9,
+                "ratio": 1.6,
+                "knee": 6.1,
+                "attack": 0.0123,
+                "release": 0.050,
+                "makeupGain": 4.0
             },
             "pan": 0.33
         },
@@ -52,7 +67,6 @@
         },
         {
             "name": "Bass",
-            "in_gain": -7,
             "eq": {
                 "bands": [
                     {"freq":44.564004, "type": "highpass"},
@@ -60,6 +74,14 @@
                     {"freq":974.520551, "gain":0.262902, "q":0.688007},
                     {"freq":1902.596919, "type": "lowpass"}
                 ]
+            },
+            "compressor": {
+                "threshold": -37.5,
+                "ratio": 1.8,
+                "knee": 1.8,
+                "attack": 0.0112,
+                "release": 0.050,
+                "makeupGain": 6.2
             }
         },
         {
@@ -92,6 +114,14 @@
                     {"freq":6625.783413, "gain":3.733333, "q":0.666667},
                     {"freq":12797.836540, "gain":-9.333333, "q":0.666667}
                 ]
+            },
+            "compressor": {
+                "threshold": -36.3,
+                "ratio": 3.3,
+                "knee": 0,
+                "attack": 0.0087,
+                "release": 0.056,
+                "makeupGain": 6.1
             }
         },
         {
@@ -104,6 +134,14 @@
                     {"freq":584.497208, "gain":-11.619048, "q":0.381231},
                     {"freq":9992.460613, "type": "lowpass"}
                 ]
+            },
+            "compressor": {
+                "threshold": -32.9,
+                "ratio": 2.0,
+                "knee": 0,
+                "attack": 0.0096,
+                "release": 0.052,
+                "makeupGain": 2.3
             },
             "pan": -0.4
         },
@@ -118,10 +156,19 @@
                     {"freq":9224.637955, "type": "lowpass"}
                 ]
             },
+            "compressor": {
+                "threshold": -32.9,
+                "ratio": 2.0,
+                "knee": 0,
+                "attack": 0.0096,
+                "release": 0.052,
+                "makeupGain": 2.3
+            },
             "pan": 0.6
         },
         {
             "name": "D:OH",
+            "channels": 2,
             "eq": {
                 "bands": [
                     {"freq":148.939075, "type": "highpass"},
@@ -130,7 +177,15 @@
                     {"freq":15481.902444, "type": "lowpass"}
                 ]
             },
-            "channels": 2
+            "compressor": {
+                "threshold": -36.8,
+                "ratio": 1.8,
+                "knee": 0,
+                "attack": 0.0018,
+                "release": 0.274,
+                "makeupGain": 6.0
+            },
+            "level": -6
         }
     ],
     "songs": [
