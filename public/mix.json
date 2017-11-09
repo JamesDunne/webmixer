@@ -11,7 +11,8 @@
                     {"freq":1885.148165, "gain":-3.720486, "q":1.060028},
                     {"freq":11132.201691, "gain":-2.802494, "q":0.805152},
                     {"freq":9600, "type": "lowpass"}
-                ]
+                ],
+                "makeupGain": 5.8
             },
             "compressor": {
                 "threshold": -46.2,
@@ -21,7 +22,8 @@
                 "release": 0.051,
                 "makeupGain": 11.0
             },
-            "pan": 0
+            "pan": 0,
+            "level": -8.36
         },
         {
             "name": "V:JD",
@@ -33,7 +35,8 @@
                     {"freq":2198.262516, "gain":-2.016344, "q":1.060028},
                     {"freq":12536.231766, "gain":-2.660482, "q":0.805152},
                     {"freq":9600, "type": "lowpass"}
-                ]
+                ],
+                "makeupGain": 5.8
             },
             "compressor": {
                 "threshold": -32.9,
@@ -43,7 +46,8 @@
                 "release": 0.050,
                 "makeupGain": 4.0
             },
-            "pan": 0.33
+            "pan": 0.33,
+            "level": -6.51
         },
         {
             "name": "G:MG",
@@ -51,9 +55,11 @@
                 "bands": [
                     {"freq":2325.930000, "gain":-4.171299, "q":2.641279},
                     {"freq":5000.000000, "gain":5.945587, "q":1.629548, "type":"highshelf"}
-                ]
+                ],
+                "makeupGain": 3
             },
-            "pan": -0.8
+            "pan": -0.8,
+            "level": -0.75
         },
         {
             "name": "G:JD",
@@ -61,9 +67,11 @@
                 "bands": [
                     {"freq":2325.930000, "gain":-4.171299, "q":2.641279},
                     {"freq":5000.000000, "gain":5.945587, "q":1.629548, "type":"highshelf"}
-                ]
+                ],
+                "makeupGain": 3
             },
-            "pan": 0.8
+            "pan": 0.8,
+            "level": -0.75
         },
         {
             "name": "Bass",
@@ -73,7 +81,8 @@
                     {"freq":433.695077, "gain":-12.218957, "q":0.507461},
                     {"freq":974.520551, "gain":0.262902, "q":0.688007},
                     {"freq":1902.596919, "type": "lowpass"}
-                ]
+                ],
+                "makeupGain": 3.7
             },
             "compressor": {
                 "threshold": -37.5,
@@ -82,7 +91,8 @@
                 "attack": 0.0112,
                 "release": 0.050,
                 "makeupGain": 6.2
-            }
+            },
+            "level": -4.5
         },
         {
             "name": "D:Kick",
@@ -93,7 +103,8 @@
                     {"freq":544.818606, "gain":-15.543725, "q":0.445548},
                     {"freq":4179.056143, "gain":4.475110, "q":0.666667},
                     {"freq":10000, "type": "lowpass"}
-                ]
+                ],
+                "makeupGain": 7.5
             },
             "compressor": {
                 "threshold": -34,
@@ -102,7 +113,8 @@
                 "attack": 0.0103,
                 "release": 0.026,
                 "makeupGain": 7.9
-            }
+            },
+            "level": 1.47
         },
         {
             "name": "D:Snare",
@@ -113,7 +125,8 @@
                     {"freq":612.205273, "gain":-10.888889, "q":0.553803},
                     {"freq":6625.783413, "gain":3.733333, "q":0.666667},
                     {"freq":12797.836540, "gain":-9.333333, "q":0.666667}
-                ]
+                ],
+                "makeupGain": 7
             },
             "compressor": {
                 "threshold": -36.3,
@@ -122,7 +135,8 @@
                 "attack": 0.0087,
                 "release": 0.056,
                 "makeupGain": 6.1
-            }
+            },
+            "level": -0.62
         },
         {
             "name": "D:HighTom",
@@ -133,7 +147,8 @@
                     {"freq":340.029120, "gain":-5.889247, "q":3.678489},
                     {"freq":584.497208, "gain":-11.619048, "q":0.381231},
                     {"freq":9992.460613, "type": "lowpass"}
-                ]
+                ],
+                "makeupGain": 6.4
             },
             "compressor": {
                 "threshold": -32.9,
@@ -143,7 +158,8 @@
                 "release": 0.052,
                 "makeupGain": 2.3
             },
-            "pan": -0.4
+            "pan": -0.4,
+            "level": -0.8
         },
         {
             "name": "D:FloorTom",
@@ -154,7 +170,8 @@
                     {"freq":280.321665, "gain":-6.771389, "q":3.123048},
                     {"freq":486.251757, "gain":-10.666667, "q":0.381231},
                     {"freq":9224.637955, "type": "lowpass"}
-                ]
+                ],
+                "makeupGain": 6.4
             },
             "compressor": {
                 "threshold": -32.9,
@@ -164,7 +181,8 @@
                 "release": 0.052,
                 "makeupGain": 2.3
             },
-            "pan": 0.6
+            "pan": 0.6,
+            "level": -0.8
         },
         {
             "name": "D:OH",
@@ -175,7 +193,8 @@
                     {"freq":405.545780, "gain":-12.566784, "q":0.452873},
                     {"freq":1838.969275, "gain":-7.406309, "q":1.110336},
                     {"freq":15481.902444, "type": "lowpass"}
-                ]
+                ],
+                "makeupGain": 7.8
             },
             "compressor": {
                 "threshold": -36.8,
@@ -185,7 +204,7 @@
                 "release": 0.274,
                 "makeupGain": 6.0
             },
-            "level": -6
+            "level": -14.4
         }
     ],
     "songs": [
