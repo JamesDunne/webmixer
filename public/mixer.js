@@ -1,11 +1,15 @@
 class Mixer {
     constructor() {
-        this._master = new Track(this, {name:"MASTER"});
+        this._master = new Track(this, {name: "MASTER"});
         this._tracks = [];
     }
 
     addTracks(trackOpts) {
-        this._tracks = this._tracks.concat(trackOpts.map(opts => new Track(this, opts)));
+        this._tracks = this._tracks.concat(
+            trackOpts
+                .filter(opts => opts.name !== "MASTER")
+                .map(opts => new Track(this, opts))
+        );
     }
 
     createNodes(ac) {

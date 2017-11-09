@@ -39,6 +39,22 @@ class Track {
         );
     }
 
+    applyOpts(opts) {
+        this.opts = Object.assign(this.opts, opts);
+
+        this.mute.value = opts.mute || this.mute.value;
+        this.solo.value = opts.solo || this.solo.value;
+        this.inGain.value = opts.in_gain || this.inGain.value;
+        if (opts.eq) {
+            this.eq.applyOpts(opts.eq);
+        }
+        if (opts.compressor) {
+            this.compressor.applyOpts(opts.compressor);
+        }
+        this.pan.value = opts.pan || this.pan.value;
+        this.level.value = opts.level || this.level.value;
+    }
+
     createNodes(ac /*: AudioContext */) {
         // Create default nodes:
         this.soloMuteNode = ac.createGain();

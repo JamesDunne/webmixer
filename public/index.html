@@ -62,6 +62,11 @@
     xhr.onload = function (e) {
         let mix = xhr.response;
 
+        // Set master track properties:
+        if (mix.master) {
+            mixer.master.applyOpts(mix.master);
+        }
+
         // Add default tracks to mixer:
         mixer.addTracks(mix.tracks);
 
