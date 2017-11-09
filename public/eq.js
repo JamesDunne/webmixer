@@ -26,7 +26,7 @@ class EQ {
         let lastNode = this.lpNode;
         for (let band of this.opts.bands || []) {
             let bandNode = ac.createBiquadFilter();
-            bandNode.type = "peaking";
+            bandNode.type = band.type || "peaking";
             bandNode.frequency.value = band.freq || 1000;
             bandNode.q = band.q || 1;
             bandNode.gain.value = band.gain || 0;
