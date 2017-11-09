@@ -68,6 +68,13 @@ class Compressor {
         this.makeupGainNode = ac.createGain();
 
         this.compNode.connect(this.makeupGainNode);
+
+        this.threshold.applyValue();
+        this.ratio.applyValue();
+        this.knee.applyValue();
+        this.attack.applyValue();
+        this.release.applyValue();
+        this.makeupGain.applyValue();
     }
 
     get inputNode() { return this.compNode; }
