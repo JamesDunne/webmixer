@@ -89,7 +89,7 @@ class Compressor {
 
     get gainReduction() {
         if (!this.compNode) return 0;
-        return gain_to_dB(1.0 - this.compNode.reduction);
+        return this.compNode.reduction;
     }
 
 }

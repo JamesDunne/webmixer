@@ -136,7 +136,7 @@
                 "knee": 0,
                 "attack": 0.0103,
                 "release": 0.026,
-                "makeupGain": 7.9
+                "makeupGain": -3
             },
             "level": 1.47,
             "solo": true
@@ -158,7 +158,7 @@
                 "knee": 0,
                 "attack": 0.0087,
                 "release": 0.056,
-                "makeupGain": 6.1
+                "makeupGain": -2
             },
             "level": -0.62
         },
@@ -179,7 +179,7 @@
                 "knee": 0,
                 "attack": 0.0096,
                 "release": 0.052,
-                "makeupGain": 2.3
+                "makeupGain": -2.3
             },
             "pan": -0.4,
             "level": -0.8
@@ -201,7 +201,7 @@
                 "knee": 0,
                 "attack": 0.0096,
                 "release": 0.052,
-                "makeupGain": 2.3
+                "makeupGain": -2.3
             },
             "pan": 0.6,
             "level": -0.8
