@@ -28,7 +28,9 @@ class GraphicEQ {
 
             bandNode.type = "peaking";
             bandNode.frequency.value = Math.pow(q, n) * 20;
-            bandNode.Q.value = q;
+            // see: http://www.rane.com/note101.html
+            // Q = f / (f * Math.pow(2, 1/6) - f * Math.pow(2, -1/6))
+            bandNode.Q.value = 4.318473046963146;
             bandNode.gain.value = gain;
 
             n++;
