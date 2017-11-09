@@ -25,6 +25,7 @@ class Track {
         );
         this._eq = new EQ(opts.eq || {});
         this._compressor = new Compressor(opts.compressor || {});
+        this._graphiceq = new GraphicEQ(opts.graphiceq || {});
         this._pan = new Parameter(
             opts.pan || 0,
             this.applyPan.bind(this)
@@ -43,6 +44,7 @@ class Track {
         this.inGain.value = opts.in_gain || this.inGain.value;
         this.eq.applyOpts(opts.eq || {});
         this.compressor.applyOpts(opts.compressor || {});
+        this.graphiceq.applyOpts(opts.graphiceq || {});
         this.pan.value = opts.pan || this.pan.value;
         this.level.value = opts.level || this.level.value;
     }
@@ -55,24 +57,31 @@ class Track {
         this.pannerNode = ac.createStereoPanner();
         this.outGainNode = ac.createGain();
 
-        // Create nodes for FX:
-        this._eq && this._eq.createNodes(ac);
-        this._compressor && this._compressor.createNodes(ac);
-
         // Connect optional components:
         let fxInNode = null;
         let fxOutNode = null;
         if (this.opts.eq) {
+            this._eq.createNodes(ac);
             fxInNode = this._eq.inputNode;
             fxOutNode = this._eq.outputNode;
         }
         if (this.opts.compressor) {
+            this._compressor.createNodes(ac);
             if (fxInNode === null) {
                 fxInNode = this._compressor.inputNode;
             } else {
                 fxOutNode.connect(this._compressor.inputNode);
             }
             fxOutNode = this._compressor.outputNode;
+        }
+        if (this.opts.graphiceq) {
+            this._graphiceq.createNodes(ac);
+            if (fxInNode === null) {
+                fxInNode = this._graphiceq.inputNode;
+            } else {
+                fxOutNode.connect(this._graphiceq.inputNode);
+            }
+            fxOutNode = this._graphiceq.outputNode;
         }
 
         // Connect nodes:
@@ -132,6 +141,7 @@ class Track {
 
     get eq() { return this._eq; }
     get compressor() { return this._compressor; }
+    get graphiceq() { return this._graphiceq; }
 
     get pan() { return this._pan; }
     applyPan() {
