@@ -1,6 +1,7 @@
 
 class EQ {
     constructor(opts) {
+        this.opts = opts;
         this._hpfreq = new Parameter(
             opts.hpfreq || 0,
             this.applyHPFreq.bind(this)
@@ -21,10 +22,23 @@ class EQ {
         this.lpNode.frequency.value = ac.sampleRate * 0.5;
 
         this.hpNode.connect(this.lpNode);
+
+        let lastNode = this.lpNode;
+        for (let band of this.opts.bands || []) {
+            let bandNode = ac.createBiquadFilter();
+            bandNode.type = "peaking";
+            bandNode.frequency.value = band.freq || 1000;
+            bandNode.q = band.q || 1;
+            bandNode.gain.value = band.gain || 0;
+            lastNode.connect(bandNode);
+            lastNode = bandNode;
+        }
+
+        this._outputNode = lastNode;
     }
 
     get inputNode() { return this.hpNode; }
-    get outputNode() { return this.lpNode; }
+    get outputNode() { return this._outputNode; }
 
     get hpfreq() { return this._hpfreq; }
     applyHPFreq() {
