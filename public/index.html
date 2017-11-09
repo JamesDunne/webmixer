@@ -74,7 +74,7 @@
         mcSource.channelInterpretation = "discrete";
 
         // TODO: would be nice to detect channel count from source.
-        let splitter = ac.createChannelSplitter(8);
+        let splitter = ac.createChannelSplitter(mix.sourceChannels);
         try {
             // For older spec implementations:
             splitter.channelCountMode = "max";

@@ -1,40 +1,67 @@
 {
+    "sourceChannels": 12,
     "tracks": [
         {
-            "name": "Drums",
-            "channels": 2
-        },
-        {
-            "name": "Bass"
-        },
-        {
-            "name": "Gtr MG",
-            "pan": -0.8
-        },
-        {
-            "name": "Gtr JD",
-            "pan": 0.8
-        },
-        {
-            "name": "Vox MG",
+            "name": "V:MG",
+            "gain": -3,
+            "eq": {
+                "hpfreq": 130,
+                "lpfreq": 9600,
+                "bands": [
+                    {"freq":160.000000, "gain":-4.000000, "q":1.038889},
+                    {"freq":400.000000, "gain":-7.730000, "q":0.804624},
+                    {"freq":1885.148165, "gain":-3.720486, "q":1.060028},
+                    {"freq":11132.201691, "gain":-2.802494, "q":0.805152}
+                ]
+            },
             "pan": 0
         },
         {
-            "name": "Vox JD",
+            "name": "V:JD",
+            "eq": {
+                "hpfreq": 130,
+                "lpfreq": 9600,
+                "bands": [
+                    {"freq":248.346574, "gain":-5.458722, "q":0.936074},
+                    {"freq":643.564086, "gain":-6.877929, "q":0.666667},
+                    {"freq":2198.262516, "gain":-2.016344, "q":1.060028},
+                    {"freq":12536.231766, "gain":-2.660482, "q":0.805152}
+                ]
+            },
             "pan": 0.33
+        },
+        {
+            "name": "G:MG",
+            "pan": -0.8
+        },
+        {
+            "name": "G:JD",
+            "pan": 0.8
+        },
+        {
+            "name": "Bass",
+            "gain": -8
+        },
+        {
+            "name": "D:Kick"
+        },
+        {
+            "name": "D:Snare"
+        },
+        {
+            "name": "D:HighTom",
+            "pan": -0.8
+        },
+        {
+            "name": "D:FloorTom",
+            "pan": 0.8
+        },
+        {
+            "name": "D:OH",
+            "channels": 2
         }
     ],
     "songs": [
-        "01%20-%20My%20Own%20Worst%20Enemy%20-%20Song%202.opus",
-        "02%20-%20December.opus",
-        "03%20-%20Say%20It%20Aint%20So%20-%20Basket%20Case.opus",
-        "04%20-%20Bound.opus",
-        "05%20-%20Hash%20Pipe.opus",
-        "06%20-%20Dammit%20-%20Trippin.opus",
-        "07%20-%20Small%20Things.opus",
-        "08%20-%20Metallica%20break.opus",
-        "09%20-%20Kids.opus",
-        "10%20-%20Cumbersome.opus",
-        "11%20-%20My%20Hero.opus"
+        "basket-case.opus"
     ]
 }
