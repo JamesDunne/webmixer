@@ -5,10 +5,6 @@
     <link rel="stylesheet" href="mixer.css"/>
 </head>
 <body>
-<ul id="songs"></ul>
-<template id="songlink">
-    <li><a href="#HREF" class="switch">NAME</a></li>
-</template>
 <div class="mixer">
     <audio id="mc" controls controlsList="nodownload">
         <source type="audio/ogg">
@@ -57,6 +53,12 @@
     // Create a mixer:
     let mixer = new Mixer();
 
+    // Find our <audio> element:
+    let mcAudio = document.getElementById("mc");
+    let mcSource = ac.createMediaElementSource(mcAudio);
+    mcSource.channelCountMode = "explicit";
+    mcSource.channelInterpretation = "discrete";
+
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'mix.json', true);
     xhr.responseType = 'json';
@@ -76,12 +78,6 @@
 
         // Initialize mixer UI:
         new MixerUI(mixer).init();
-
-        // Find our <audio> element:
-        let mcAudio = document.getElementById("mc");
-        let mcSource = ac.createMediaElementSource(mcAudio);
-        mcSource.channelCountMode = "explicit";
-        mcSource.channelInterpretation = "discrete";
 
         // TODO: would be nice to detect channel count from source.
         let splitter = ac.createChannelSplitter(mix.sourceChannels);
@@ -115,23 +111,9 @@
             merger.connect(track.inputNode);
         }
 
-        // Create song links and wire up click handlers:
-        let songsNode = document.getElementById("songs");
-        let songlinkTemplate = document.getElementById('songlink');
-        for (let song of mix.songs) {
-            let node = document.importNode(songlinkTemplate.content, true);
-            let a = node.querySelector("a");
-            a.href = song;
-            a.innerText = decodeURIComponent(song);
-            a.addEventListener("click", e => {
-                e.preventDefault();
-                let href = e.target.getAttribute("href");
-                mcAudio.src = href;
-                mcAudio.play();
-                return false;
-            });
-            songsNode.appendChild(node);
-        }
+        mcAudio.src = mix.songs[0];
+        mcAudio.play();
+        mcAudio.loop = true;
     };
     xhr.send(null);
 
