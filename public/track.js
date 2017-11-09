@@ -23,7 +23,12 @@ class Track {
             opts.in_gain || 0,
             this.applyInGain.bind(this)
         );
-        this._eq = new EQ(opts.eq || {});
+        if (opts.eq) {
+            this._eq = new EQ(opts.eq);
+        }
+        if (opts.compressor) {
+            this._compressor = new Compressor(opts.compressor);
+        }
         this._pan = new Parameter(
             opts.pan || 0,
             this.applyPan.bind(this)
@@ -43,13 +48,34 @@ class Track {
         this.outGainNode = ac.createGain();
 
         // Create nodes for FX:
-        this._eq.createNodes(ac);
+        this._eq && this._eq.createNodes(ac);
+        this._compressor && this._compressor.createNodes(ac);
+
+        // Connect optional components:
+        let fxInNode = null;
+        let fxOutNode = null;
+        if (this._eq) {
+            fxInNode = this._eq.inputNode;
+            fxOutNode = this._eq.outputNode;
+        }
+        if (this._compressor) {
+            if (fxInNode === null) {
+                fxInNode = this._compressor.inputNode;
+            } else {
+                fxOutNode.connect(this._compressor.inputNode);
+            }
+            fxOutNode = this._compressor.outputNode;
+        }
 
         // Connect nodes:
         this.soloMuteNode.connect(this.muteNode);
         this.muteNode.connect(this.inGainNode);
-        this.inGainNode.connect(this._eq.inputNode);
-        this._eq.outputNode.connect(this.pannerNode);
+        if (fxInNode !== null) {
+            this.inGainNode.connect(fxInNode);
+            fxOutNode.connect(this.pannerNode);
+        } else {
+            this.inGainNode.connect(this.pannerNode);
+        }
         this.pannerNode.connect(this.outGainNode);
 
         // Set properties:
@@ -97,6 +123,7 @@ class Track {
     }
 
     get eq() { return this._eq; }
+    get compressor() { return this._compressor; }
 
     get pan() { return this._pan; }
     applyPan() {

@@ -75,13 +75,21 @@
         {
             "name": "D:Kick",
             "eq": {
-                "hpfreq": 90,
+                "hpfreq": 110,
                 "lpfreq": 10000,
                 "bands": [
                     {"freq":133.249144, "gain":-3.972947, "q":1.591894},
                     {"freq":544.818606, "gain":-15.543725, "q":0.445548},
                     {"freq":4179.056143, "gain":4.475110, "q":0.666667}
                 ]
+            },
+            "compressor": {
+                "threshold": -34,
+                "ratio": 3.8,
+                "knee": 0,
+                "attack": 0.0103,
+                "release": 0.026,
+                "makeupGain": 7.9
             }
         },
         {
