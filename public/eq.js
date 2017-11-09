@@ -26,6 +26,13 @@ class EQ {
             outputNode = bandNode;
         }
 
+        if (this.opts.makeupGain) {
+            this.makeupGainNode = ac.createGain();
+            this.makeupGainNode.gain.value = dB_to_gain(this.opts.makeupGain);
+            outputNode.connect(this.makeupGainNode);
+            outputNode = this.makeupGainNode;
+        }
+
         this.inputNode = inputNode;
         this.outputNode = outputNode;
         this.bandNodes = bandNodes;
