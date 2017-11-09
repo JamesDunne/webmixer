@@ -6,5 +6,7 @@ function dB_to_gain(dB) {
 
 // Convert from gain multiplier to dB:
 function gain_to_dB(gain) {
-    return 20.0 * Math.log10(gain);
+    let sign = Math.sign(gain);
+    let gain_abs = gain * sign;
+    return 20.0 * Math.log10(gain) * sign;
 }
