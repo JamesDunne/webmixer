@@ -1,5 +1,31 @@
+import { Parameter } from './parameter';
+import { Mixer } from './mixer';
+import { EQ } from './eq';
+import { Compressor } from './compressor';
+import { GraphicEQ } from './graphiceq';
 
-class Track {
+export class Track {
+    private mixer: Mixer;
+    name: string;
+    channels: number;
+    opts: any;
+
+    private _soloMute: Parameter;
+    private _mute: Parameter;
+    private _solo: Parameter;
+    private _in_gain: Parameter;
+    _eq: EQ;
+    _compressor: Compressor;
+    _graphiceq: GraphicEQ;
+    private _pan: Parameter;
+    private _level: Parameter;
+
+    private soloMuteNode: GainNode;
+    private muteNode: GainNode;
+    private inGainNode: GainNode;
+    private pannerNode: StereoPannerNode;
+    private outGainNode: GainNode;
+
     constructor(mixer, opts) {
         this.mixer = mixer;
         this.name = opts.name;

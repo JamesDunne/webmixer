@@ -1,4 +1,9 @@
-class Mixer {
+import { Track } from './track';
+
+export class Mixer {
+    _master: Track;
+    _tracks: Track[];
+
     constructor() {
         this._master = new Track(this, {name: "MASTER"});
         this._tracks = [];
@@ -21,14 +26,14 @@ class Mixer {
             // Create track FX chain:
             track.createNodes(ac);
             // Connect track FX chain to master track's input:
-            track.outputNode.connect(mixer.master.inputNode);
+            track.outputNode.connect(this.master.inputNode);
         }
 
         // Connect mixer master out to destination:
-        mixer.master.outputNode.connect(ac.destination);
+        this.master.outputNode.connect(ac.destination);
 
         // Initialize solo/mute for all tracks:
-        mixer.applySolo();
+        this.applySolo();
     }
 
     track(name) {

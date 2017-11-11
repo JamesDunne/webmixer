@@ -1,5 +1,9 @@
 
-class Parameter {
+export class Parameter {
+    applyFn: (value:any) => void;
+    _value: any;
+    _changed: ((value:any) => void)[];
+
     constructor(value, applyFn) {
         if (!(applyFn instanceof Function)) throw 'applyFn is not an instance of Function!';
         this.applyFn = applyFn;

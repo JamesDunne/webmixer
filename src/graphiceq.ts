@@ -1,5 +1,12 @@
 
-class EQ {
+export class GraphicEQ {
+    opts: any;
+    inputNode: AudioNode;
+    outputNode: AudioNode;
+
+    bandNodes: BiquadFilterNode[];
+    private makeupGainNode: GainNode;
+
     constructor(opts) {
         this.opts = opts;
     }
@@ -13,14 +20,27 @@ class EQ {
         let outputNode = null;
         let bandNodes = [];
 
-        for (let band of this.opts.bands || []) {
+        let bandCount = this.opts.bandCount || 16;
+        if (bandCount < 1) {
+            bandCount = 1;
+        }
+
+        let bands = this.opts.bands || [];
+        let n = 0;
+        let q = Math.log2(3);
+
+        for (let gain of bands) {
             let bandNode = ac.createBiquadFilter();
             bandNodes.push(bandNode);
 
-            bandNode.type = band.type || "peaking";
-            bandNode.frequency.value = band.freq;
-            bandNode.Q.value = band.q || 0.666667;
-            bandNode.gain.value = band.gain || 0;
+            bandNode.type = "peaking";
+            bandNode.frequency.value = Math.pow(q, n) * 20;
+            // see: http://www.rane.com/note101.html
+            // Q = f / (f * Math.pow(2, 1/6) - f * Math.pow(2, -1/6))
+            bandNode.Q.value = 4.318473046963146;
+            bandNode.gain.value = gain;
+
+            n++;
 
             if (inputNode === null) {
                 inputNode = bandNode;

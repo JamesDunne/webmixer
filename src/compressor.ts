@@ -1,5 +1,17 @@
+import { Parameter } from './parameter';
 
-class Compressor {
+export class Compressor {
+    opts: any;
+    _threshold: Parameter;
+    _ratio: Parameter;
+    _knee: Parameter;
+    _attack: Parameter;
+    _release: Parameter;
+    _makeupGain: Parameter;
+
+    private compNode: DynamicsCompressorNode;
+    private makeupGainNode: GainNode;
+
     constructor(opts) {
         this.opts = opts;
 

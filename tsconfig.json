@@ -1,0 +1,8 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "AMD",
+		"sourceMap": true,
+		"outFile": "./public/main.js"
+	}
+}

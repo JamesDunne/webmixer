@@ -1,9 +1,11 @@
 
+import { Mixer } from './mixer';
+
 // Define maximum gain at the top of the fader range [0..1]:
 const faderMaxGain = dB_to_gain(12);
 
 // Convert from dB to fader range [0..1]:
-function dB_to_fader(dB) {
+function dB_to_fader(dB: number): number {
     if (dB == -Infinity) return 0.0;
     let gain = dB_to_gain(dB) * 2.0 / faderMaxGain;
     let fader = Math.pow((6.0 * Math.log(gain) / Math.log(2.0) + 192.0) / 198.0, 8.0);
@@ -47,7 +49,9 @@ function levelFormat(dB) {
     return `${withExactDigits(dB,3)} dB`;
 }
 
-class MixerUI {
+export class MixerUI {
+    mixer: Mixer;
+
     constructor(mixer) {
         this.mixer = mixer;
     }
@@ -98,46 +102,46 @@ class MixerUI {
         let soloInputHandler = this.soloInputHandler.bind(this);
 
         // Stamp template per each track:
-        let trackTemplate = document.getElementById("trackTemplate");
+        let trackTemplate = <HTMLTemplateElement>document.getElementById("trackTemplate");
         let trackStrip = document.querySelector(".mixer .trackstrip");
         [...this.mixer.tracks, this.mixer.master].forEach(track => {
             // Clone template:
-            var node = document.importNode(trackTemplate.content, true);
+            const node = document.importNode(trackTemplate.content, true);
 
             // Set data-track attribute:
-            let trackNode = node.querySelector("div.track");
+            const trackNode = node.querySelector("div.track");
             trackNode.setAttribute("data-track", track.name);
 
             // Set name label:
-            let nameLabel = node.querySelector(".label span.name");
+            const nameLabel = <HTMLSpanElement>node.querySelector(".label span.name");
             nameLabel.innerText = track.name;
 
             // Set level label:
-            let levelLabel = node.querySelector(".label span.level");
+            const levelLabel = <HTMLSpanElement>node.querySelector(".label span.level");
             levelLabel.innerText = levelFormat(track.level.value);
             // Click level label to reset to 0:
             levelLabel.addEventListener("click", faderResetHandler);
 
             // Bind fader events:
-            let faderNode = trackNode.querySelector(".fader input[type=range]");
-            faderNode.min = 0;
-            faderNode.max = 1.0;
-            faderNode.value = dB_to_fader(track.level.value);
+            const faderNode = <HTMLInputElement>trackNode.querySelector(".fader input[type=range]");
+            faderNode.min = '0.0';
+            faderNode.max = '1.0';
+            faderNode.valueAsNumber = dB_to_fader(track.level.value);
             faderNode.addEventListener("dblclick", faderResetHandler);
             faderNode.addEventListener("input", faderInputHandler);
             track.level.addChangedEvent((value) => {
-                faderNode.value = dB_to_fader(value);
+                faderNode.valueAsNumber = dB_to_fader(value);
                 levelLabel.innerText = levelFormat(value);
             });
 
-            let muteNode = trackNode.querySelector(".mute-button input[type=checkbox]");
+            let muteNode = <HTMLInputElement>trackNode.querySelector(".mute-button input[type=checkbox]");
             muteNode.checked = track.mute.value;
             muteNode.addEventListener("change", muteInputHandler);
             track.mute.addChangedEvent((value) => {
                 muteNode.checked = value;
             });
 
-            let soloNode = trackNode.querySelector(".solo-button input[type=checkbox]");
+            let soloNode = <HTMLInputElement>trackNode.querySelector(".solo-button input[type=checkbox]");
             soloNode.checked = track.solo.value;
             soloNode.addEventListener("change", soloInputHandler);
             track.solo.addChangedEvent((value) => {
