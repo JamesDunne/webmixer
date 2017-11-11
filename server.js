@@ -10,7 +10,7 @@ var static = require( 'node-static' ),
     port = 8080,
     http = require( 'http' );
 
-var file = new static.Server( './public', {
+var file = new static.Server( './dist', {
     cache: 0,
     gzip: true
 } );
