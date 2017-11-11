@@ -1,3 +1,4 @@
+import { dB_to_gain, gain_to_dB } from './util';
 import { Parameter } from './parameter';
 
 export class Compressor {

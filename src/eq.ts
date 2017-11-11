@@ -1,3 +1,4 @@
+import { dB_to_gain, gain_to_dB } from './util';
 
 export class EQ {
     opts: any;

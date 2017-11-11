@@ -1,3 +1,4 @@
+import { dB_to_gain, gain_to_dB } from './util';
 import { Parameter } from './parameter';
 import { Mixer } from './mixer';
 import { EQ } from './eq';

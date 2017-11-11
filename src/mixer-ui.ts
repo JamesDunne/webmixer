@@ -1,4 +1,4 @@
-
+import { dB_to_gain, gain_to_dB } from './util';
 import { Mixer } from './mixer';
 
 // Define maximum gain at the top of the fader range [0..1]:
