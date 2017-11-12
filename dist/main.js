@@ -958,13 +958,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     faderNode.valueAsNumber = dB_to_fader(value);
                     levelLabel.innerText = levelFormat(value);
                 });
-                let muteNode = trackNode.querySelector(".mute-button input[type=checkbox]");
+                let muteNode = trackNode.querySelector(".mute.button input[type=checkbox]");
                 muteNode.checked = track.mute.value;
                 muteNode.addEventListener("change", muteInputHandler);
                 track.mute.addChangedEvent((value) => {
                     muteNode.checked = value;
                 });
-                let soloNode = trackNode.querySelector(".solo-button input[type=checkbox]");
+                let soloNode = trackNode.querySelector(".solo.button input[type=checkbox]");
                 soloNode.checked = track.solo.value;
                 soloNode.addEventListener("change", soloInputHandler);
                 track.solo.addChangedEvent((value) => {

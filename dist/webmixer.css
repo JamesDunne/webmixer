@@ -68,96 +68,67 @@ html, body {
 
 /* BUTTONS */
 .webmixer .track .button-container {
-    margin: 0px 0px 0px calc(0px + var(--fader-width) * 0.5 - 14px);
+    grid-auto-flow: column;
+    grid-template-columns: .5fr .5fr;
+    display: grid;
 }
 
-/* MUTE */
-.webmixer .track .mute-button {
+.webmixer .track .button {
     background-color: #666B73;
     border-radius: 4px;
     border: 1px solid #000;
     overflow: hidden;
-    float: left;
-    font-family: sans-serif;
     font-size: 10px;
 }
 
-.webmixer .track .mute-button label {
+.webmixer .track .button label {
     width: 100%;
     display: block;
 }
 
-.webmixer .track .mute-button label input {
+.webmixer .track .button label input {
     display: none;
     position: absolute;
     top: -20px;
 }
 
-.webmixer .track .mute-button label span {
+.webmixer .track .button label span {
     text-align: center;
     padding: 3px;
     display: block;
-    width: 12px;
 }
 
-.webmixer .track .mute-button input:hover+span {
+/* MUTE */
+.webmixer .track .button.mute input:hover+span {
     background-color: #efE0E0
 }
 
-.webmixer .track .mute-button input:checked+span {
+.webmixer .track .button.mute input:checked+span {
     background-color: #911;
     color: #fff
 }
 
-.webmixer .track .mute-button input:checked:hover+span {
+.webmixer .track .button.mute input:checked:hover+span {
     background-color: #c11;
     color: #fff
 }
 
 /* SOLO */
-.webmixer .track .solo-button {
-    background-color: #666B73;
-    border-radius: 4px;
-    border: 1px solid #000;
-    overflow: hidden;
-    float: left;
-    font-family: sans-serif;
-    font-size: 10px;
-    margin-left: 0px;
-}
-
-.webmixer .track .solo-button label {
-    width: 100%;
-    display: block;
-}
-
-.webmixer .track .solo-button label input {
-    display: none;
-    position: absolute;
-    top: -20px;
-}
-
-.webmixer .track .solo-button label span {
-    text-align: center;
-    padding: 3px;
-    display: block;
-    width: 12px;
-}
-
-.webmixer .track .solo-button input:hover+span {
+.webmixer .track .button.solo input:hover+span {
     background-color: #efE0E0
 }
 
-.webmixer .track .solo-button input:checked+span {
+.webmixer .track .button.solo input:checked+span {
     background-color: #191;
     color: #fff
 }
 
-.webmixer .track .solo-button input:checked:hover+span {
+.webmixer .track .button.solo input:checked:hover+span {
     background-color: #1c1;
     color: #fff
 }
 
+/* FADER */
 .webmixer .track .fader {
     width: var(--fader-width);
     height: var(--fader-height);

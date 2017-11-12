@@ -134,14 +134,14 @@ export class MixerUI {
                 levelLabel.innerText = levelFormat(value);
             });
 
-            let muteNode = <HTMLInputElement>trackNode.querySelector(".mute-button input[type=checkbox]");
+            let muteNode = <HTMLInputElement>trackNode.querySelector(".mute.button input[type=checkbox]");
             muteNode.checked = track.mute.value;
             muteNode.addEventListener("change", muteInputHandler);
             track.mute.addChangedEvent((value) => {
                 muteNode.checked = value;
             });
 
-            let soloNode = <HTMLInputElement>trackNode.querySelector(".solo-button input[type=checkbox]");
+            let soloNode = <HTMLInputElement>trackNode.querySelector(".solo.button input[type=checkbox]");
             soloNode.checked = track.solo.value;
             soloNode.addEventListener("change", soloInputHandler);
             track.solo.addChangedEvent((value) => {
