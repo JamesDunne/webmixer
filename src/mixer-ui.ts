@@ -129,9 +129,6 @@ export class MixerUI {
                     return 312 - (gain_to_fader(gain) * 240.0);
                 }
 
-                // f[i] = 20 * Math.pow(1000.0, i / n)
-                // f[i] / 20 = Math.pow(1000.0, i / n)
-                // Math.log10(f[i] / 20) = i / n
                 function x(f: number): number {
                     return Math.log(f / 20.0) / Math.log(1000) * (n-1);
                 }
