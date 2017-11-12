@@ -116,6 +116,26 @@ export class MixerUI {
             const nameLabel = <HTMLSpanElement>node.querySelector(".label span.name");
             nameLabel.innerText = track.name;
 
+            // Calculate EQ response:
+            const eqCanvas = <HTMLCanvasElement>node.querySelector(".eq canvas.eq-response");
+            {
+                function y(gain) {
+                    return 312 - ((gain) * 156.0);
+                }
+
+                const n = 52 * 8;
+                let resp = track.eq.responseCurve(n);
+                let ctx = eqCanvas.getContext("2d");
+                ctx.beginPath();
+                ctx.moveTo(-1, y(resp.mag[0]));
+                for (let i = 1; i < n; i++) {
+                    ctx.lineTo(i, y(resp.mag[i]));
+                }
+                ctx.lineWidth = 8;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+            }
+
             // Set level label:
             const levelLabel = <HTMLSpanElement>node.querySelector(".label span.level");
             levelLabel.innerText = levelFormat(track.level.value);

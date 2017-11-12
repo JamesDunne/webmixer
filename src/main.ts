@@ -6,6 +6,7 @@ let ac = new AudioContext();
 
 // Create a mixer:
 let mixer = new Mixer();
+window['mixer'] = mixer;
 
 // Find our <audio> element:
 let mcAudio = <HTMLMediaElement>document.getElementById("mc");

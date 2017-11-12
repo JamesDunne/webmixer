@@ -128,6 +128,14 @@ html, body {
     color: #fff
 }
 
+.webmixer .track .eq {
+    display: block;
+}
+
+.webmixer .track .eq .eq-response {
+    width: var(--track-width);
+}
+
 /* FADER */
 .webmixer .track .fader {
     width: var(--fader-width);

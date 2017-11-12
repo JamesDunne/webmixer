@@ -8,8 +8,13 @@ export class EQ {
     bandNodes: BiquadFilterNode[];
     private makeupGainNode: GainNode;
 
+    private freqs: Float32Array;
+    private magResponse: Float32Array;
+    private phaseResponse: Float32Array;
+
     constructor(opts) {
         this.opts = opts;
+        this.bandNodes = [];
     }
 
     applyOpts(opts) {
@@ -53,5 +58,38 @@ export class EQ {
         this.inputNode = inputNode;
         this.outputNode = outputNode;
         this.bandNodes = bandNodes;
+    }
+
+    get responseFreqs(): Float32Array {
+        if (this.freqs) return this.freqs;
+        return this.freqs;
+    }
+
+    responseCurve(n: number): {freqs: Float32Array; mag: Float32Array; phase: Float32Array} {
+        //const n = 52 * 8;
+        let resp = {
+            freqs: new Float32Array(n),
+            mag: new Float32Array(n),
+            phase: new Float32Array(n)
+        };
+
+        for (let i = 0; i < n; i++) {
+            resp.freqs[i] = 20 * Math.pow(1000.0, i / n);
+            resp.mag[i] = 1;
+            resp.phase[i] = 1;
+        }
+
+        for (let bandNode of this.bandNodes) {
+            let bandMag = new Float32Array(n);
+            let bandPhase = new Float32Array(n);
+            bandNode.getFrequencyResponse(resp.freqs, bandMag, bandPhase);
+
+            for (let i = 0; i < n; i++) {
+                resp.mag[i] *= bandMag[i];
+                resp.phase[i] *= bandPhase[i];
+            }
+        }
+
+        return resp;
     }
 }

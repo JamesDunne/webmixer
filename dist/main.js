@@ -137,6 +137,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     let ac = new AudioContext();
     // Create a mixer:
     let mixer = new mixer_1.Mixer();
+    window['mixer'] = mixer;
     // Find our <audio> element:
     let mcAudio = document.getElementById("mc");
     let mcSource = ac.createMediaElementSource(mcAudio);
@@ -650,6 +651,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     class EQ {
         constructor(opts) {
             this.opts = opts;
+            this.bandNodes = [];
         }
         applyOpts(opts) {
             this.opts = Object.assign(this.opts, opts);
@@ -687,6 +689,34 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             this.inputNode = inputNode;
             this.outputNode = outputNode;
             this.bandNodes = bandNodes;
+        }
+        get responseFreqs() {
+            if (this.freqs)
+                return this.freqs;
+            return this.freqs;
+        }
+        responseCurve(n) {
+            //const n = 52 * 8;
+            let resp = {
+                freqs: new Float32Array(n),
+                mag: new Float32Array(n),
+                phase: new Float32Array(n)
+            };
+            for (let i = 0; i < n; i++) {
+                resp.freqs[i] = 20 * Math.pow(1000.0, i / n);
+                resp.mag[i] = 1;
+                resp.phase[i] = 1;
+            }
+            for (let bandNode of this.bandNodes) {
+                let bandMag = new Float32Array(n);
+                let bandPhase = new Float32Array(n);
+                bandNode.getFrequencyResponse(resp.freqs, bandMag, bandPhase);
+                for (let i = 0; i < n; i++) {
+                    resp.mag[i] *= bandMag[i];
+                    resp.phase[i] *= bandPhase[i];
+                }
+            }
+            return resp;
         }
     }
     exports.EQ = EQ;
@@ -942,6 +972,24 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 // Set name label:
                 const nameLabel = node.querySelector(".label span.name");
                 nameLabel.innerText = track.name;
+                // Calculate EQ response:
+                const eqCanvas = node.querySelector(".eq canvas.eq-response");
+                {
+                    function y(gain) {
+                        return 312 - ((gain) * 156.0);
+                    }
+                    const n = 52 * 8;
+                    let resp = track.eq.responseCurve(n);
+                    let ctx = eqCanvas.getContext("2d");
+                    ctx.beginPath();
+                    ctx.moveTo(-1, y(resp.mag[0]));
+                    for (let i = 1; i < n; i++) {
+                        ctx.lineTo(i, y(resp.mag[i]));
+                    }
+                    ctx.lineWidth = 8;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.stroke();
+                }
                 // Set level label:
                 const levelLabel = node.querySelector(".label span.level");
                 levelLabel.innerText = levelFormat(track.level.value);
