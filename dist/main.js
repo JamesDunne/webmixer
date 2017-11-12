@@ -932,7 +932,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             let soloInputHandler = this.soloInputHandler.bind(this);
             // Stamp template per each track:
             let trackTemplate = document.getElementById("trackTemplate");
-            let trackStrip = document.querySelector(".mixer .trackstrip");
+            let trackStrip = document.querySelector(".webmixer .trackstrip");
             [...this.mixer.tracks, this.mixer.master].forEach(track => {
                 // Clone template:
                 const node = document.importNode(trackTemplate.content, true);
