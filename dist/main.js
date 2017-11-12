@@ -690,11 +690,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             this.outputNode = outputNode;
             this.bandNodes = bandNodes;
         }
-        get responseFreqs() {
-            if (this.freqs)
-                return this.freqs;
-            return this.freqs;
-        }
         responseCurve(n) {
             //const n = 52 * 8;
             let resp = {
@@ -704,7 +699,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             };
             let baseGain = util_1.dB_to_gain(this.opts.makeupGain);
             for (let i = 0; i < n; i++) {
-                resp.freqs[i] = 20 * Math.pow(1000.0, i / n);
+                resp.freqs[i] = 20 * Math.pow(1000.0, i / (n - 1));
                 resp.mag[i] = baseGain;
                 resp.phase[i] = 1;
             }
@@ -878,13 +873,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     Object.defineProperty(exports, "__esModule", { value: true });
     // Define maximum gain at the top of the fader range [0..1]:
     const faderMaxGain = util_1.dB_to_gain(12);
+    function gain_to_fader(gain) {
+        let fader = Math.pow((6.0 * Math.log(gain) / Math.log(2.0) + 192.0) / 198.0, 8.0);
+        return fader;
+    }
     // Convert from dB to fader range [0..1]:
     function dB_to_fader(dB) {
         if (dB == -Infinity)
             return 0.0;
         let gain = util_1.dB_to_gain(dB) * 2.0 / faderMaxGain;
-        let fader = Math.pow((6.0 * Math.log(gain) / Math.log(2.0) + 192.0) / 198.0, 8.0);
-        return fader;
+        return gain_to_fader(gain);
     }
     // Define a zero-value on the fader [0..1] scale:
     const faderZero = dB_to_fader(0);
@@ -978,13 +976,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 {
                     const n = 52 * 8;
                     function y(gain) {
-                        return 312 - ((gain) * 156.0);
+                        return 312 - (gain_to_fader(gain) * 240.0);
                     }
                     // f[i] = 20 * Math.pow(1000.0, i / n)
                     // f[i] / 20 = Math.pow(1000.0, i / n)
                     // Math.log10(f[i] / 20) = i / n
                     function x(f) {
-                        return Math.log(f / 20.0) / Math.log(1000) * n;
+                        return Math.log(f / 20.0) / Math.log(1000) * (n - 1);
                     }
                     let eq = track.eq;
                     let resp = eq.responseCurve(n);

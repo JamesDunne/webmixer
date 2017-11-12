@@ -60,11 +60,6 @@ export class EQ {
         this.bandNodes = bandNodes;
     }
 
-    get responseFreqs(): Float32Array {
-        if (this.freqs) return this.freqs;
-        return this.freqs;
-    }
-
     responseCurve(n: number): {freqs: Float32Array; mag: Float32Array; phase: Float32Array} {
         //const n = 52 * 8;
         let resp = {
@@ -75,7 +70,7 @@ export class EQ {
 
         let baseGain = dB_to_gain(this.opts.makeupGain);
         for (let i = 0; i < n; i++) {
-            resp.freqs[i] = 20 * Math.pow(1000.0, i / n);
+            resp.freqs[i] = 20 * Math.pow(1000.0, i / (n-1));
             resp.mag[i] = baseGain;
             resp.phase[i] = 1;
         }
