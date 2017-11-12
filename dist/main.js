@@ -702,9 +702,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 mag: new Float32Array(n),
                 phase: new Float32Array(n)
             };
+            let baseGain = util_1.dB_to_gain(this.opts.makeupGain);
             for (let i = 0; i < n; i++) {
                 resp.freqs[i] = 20 * Math.pow(1000.0, i / n);
-                resp.mag[i] = 1;
+                resp.mag[i] = baseGain;
                 resp.phase[i] = 1;
             }
             for (let bandNode of this.bandNodes) {

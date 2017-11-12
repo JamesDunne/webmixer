@@ -73,9 +73,10 @@ export class EQ {
             phase: new Float32Array(n)
         };
 
+        let baseGain = dB_to_gain(this.opts.makeupGain);
         for (let i = 0; i < n; i++) {
             resp.freqs[i] = 20 * Math.pow(1000.0, i / n);
-            resp.mag[i] = 1;
+            resp.mag[i] = baseGain;
             resp.phase[i] = 1;
         }
 
