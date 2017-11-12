@@ -71,6 +71,8 @@ html, body {
     grid-auto-flow: column;
     grid-template-columns: .5fr .5fr;
     display: grid;
+    user-select: none;
+    touch-action: none;
 }
 
 .webmixer .track .button {
@@ -129,11 +131,14 @@ html, body {
 }
 
 .webmixer .track .eq {
-    display: block;
+    display: grid;
+    justify-items: center;
+    user-select: none;
+    touch-action: none;
 }
 
 .webmixer .track .eq .eq-response {
-    width: var(--track-width);
+    width: calc(var(--track-width) - 2px);
 }
 
 /* FADER */
