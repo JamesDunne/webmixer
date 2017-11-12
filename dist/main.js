@@ -975,12 +975,35 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 // Calculate EQ response:
                 const eqCanvas = node.querySelector(".eq canvas.eq-response");
                 {
+                    const n = 52 * 8;
                     function y(gain) {
                         return 312 - ((gain) * 156.0);
                     }
-                    const n = 52 * 8;
-                    let resp = track.eq.responseCurve(n);
+                    // f[i] = 20 * Math.pow(1000.0, i / n)
+                    // f[i] / 20 = Math.pow(1000.0, i / n)
+                    // Math.log10(f[i] / 20) = i / n
+                    function x(f) {
+                        return Math.log(f / 20.0) / Math.log(1000) * n;
+                    }
+                    let eq = track.eq;
+                    let resp = eq.responseCurve(n);
                     let ctx = eqCanvas.getContext("2d");
+                    ctx.strokeStyle = '#555555';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(0, y(1));
+                    ctx.lineTo(n, y(1));
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(x(20), 0);
+                    ctx.lineTo(x(20), 312);
+                    ctx.moveTo(x(200), 0);
+                    ctx.lineTo(x(200), 312);
+                    ctx.moveTo(x(2000), 0);
+                    ctx.lineTo(x(2000), 312);
+                    ctx.moveTo(x(20000), 0);
+                    ctx.lineTo(x(20000), 312);
+                    ctx.stroke();
                     ctx.beginPath();
                     ctx.moveTo(-1, y(resp.mag[0]));
                     for (let i = 1; i < n; i++) {
