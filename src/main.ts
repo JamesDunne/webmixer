@@ -17,7 +17,7 @@ mcSource.channelInterpretation = "discrete";
 let mix = {
     "sourceChannels": 12,
     "master": {
-        "_graphiceq": {
+        "graphiceq": {
             "bands": [
                 0,
                 0,

@@ -126,7 +126,7 @@ export class MixerUI {
                 const n = 52 * 8;
 
                 function y(gain: number): number {
-                    return 312 - (gain_to_fader(gain) * 240.0);
+                    return 312 - (gain_to_fader(gain) * 220.0);
                 }
 
                 function x(f: number): number {

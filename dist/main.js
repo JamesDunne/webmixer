@@ -976,11 +976,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 {
                     const n = 52 * 8;
                     function y(gain) {
-                        return 312 - (gain_to_fader(gain) * 240.0);
+                        return 312 - (gain_to_fader(gain) * 220.0);
                     }
-                    // f[i] = 20 * Math.pow(1000.0, i / n)
-                    // f[i] / 20 = Math.pow(1000.0, i / n)
-                    // Math.log10(f[i] / 20) = i / n
                     function x(f) {
                         return Math.log(f / 20.0) / Math.log(1000) * (n - 1);
                     }
