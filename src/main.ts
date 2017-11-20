@@ -1,5 +1,4 @@
-import { Mixer } from './mixer';
-import { MixerUI } from './mixer-ui';
+import { Mixer, MixerUI } from 'webmixer';
 
 // Create an AudioContext:
 let ac = new AudioContext();

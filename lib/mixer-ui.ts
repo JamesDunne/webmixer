@@ -1,5 +1,6 @@
 import { dB_to_gain, gain_to_dB } from './util';
 import { Mixer } from './mixer';
+import { Track } from './track';
 
 // Define maximum gain at the top of the fader range [0..1]:
 const faderMaxGain = dB_to_gain(12);

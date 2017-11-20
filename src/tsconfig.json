@@ -3,9 +3,9 @@
 		"target": "ES6",
 		"sourceMap": true,
         "module": "amd",
-        "outDir": "./dist/"
+        "outDir": "../dist/"
 	},
     "include": [
-        "./src/"
+        "./"
     ]
 }
