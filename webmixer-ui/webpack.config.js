@@ -16,7 +16,7 @@ var libraryConfig = {
     modules: ["node_modules"]
   },
   output: {
-    library: 'webmixer-ui',
+    library: 'WebmixerUI',
     libraryTarget: 'umd',
     filename: 'webmixer-ui.js',
     path: path.resolve(__dirname, 'dist')
@@ -26,7 +26,7 @@ var libraryConfig = {
       amd: 'webmixer',
       commonjs: 'webmixer',
       commonjs2: 'webmixer',
-      root: 'webmixer'
+      root: 'Webmixer'
     }
   }
 };

@@ -16,7 +16,7 @@ var libraryConfig = {
     modules: ["node_modules"]
   },
   output: {
-    library: 'webmixer',
+    library: 'Webmixer',
     libraryTarget: 'umd',
     filename: 'webmixer.js',
     path: path.resolve(__dirname, 'dist')

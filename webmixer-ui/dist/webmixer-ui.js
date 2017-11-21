@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define(["webmixer"], factory);
 	else if(typeof exports === 'object')
-		exports["webmixer-ui"] = factory(require("webmixer"));
+		exports["WebmixerUI"] = factory(require("webmixer"));
 	else
-		root["webmixer-ui"] = factory(root["webmixer"]);
+		root["WebmixerUI"] = factory(root["Webmixer"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
