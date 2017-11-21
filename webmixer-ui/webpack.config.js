@@ -25,7 +25,8 @@ var libraryConfig = {
     webmixer: {
       amd: 'webmixer',
       commonjs: 'webmixer',
-      commonjs2: 'webmixer'
+      commonjs2: 'webmixer',
+      root: 'webmixer'
     }
   }
 };

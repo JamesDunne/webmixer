@@ -6,7 +6,7 @@
 	else if(typeof exports === 'object')
 		exports["webmixer-ui"] = factory(require("webmixer"));
 	else
-		root["webmixer-ui"] = factory(root[undefined]);
+		root["webmixer-ui"] = factory(root["webmixer"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
