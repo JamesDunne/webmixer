@@ -1,10 +1,11 @@
 {
-	"compilerOptions": {
-		"target": "ES6",
-		"sourceMap": true,
+    "compilerOptions": {
+        "target": "ES6",
+        "sourceMap": true,
         "module": "amd",
-        "outDir": "../dist/"
-	},
+        "outDir": "../dist/",
+        "moduleResolution": "node"
+    },
     "include": [
         "./"
     ]
