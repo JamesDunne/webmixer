@@ -18,7 +18,7 @@ var libraryConfig = {
     library: 'webmixer',
     libraryTarget: 'umd',
     filename: 'webmixer.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'webmixer')
   }
 };
 

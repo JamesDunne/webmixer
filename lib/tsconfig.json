@@ -3,8 +3,7 @@
         "target": "ES6",
         "sourceMap": true,
         "declaration": true,
-        "module": "amd",
-        "outDir": "../dist"
+        "module": "amd"
 	},
     "include": [
         "./"
