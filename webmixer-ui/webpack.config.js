@@ -12,7 +12,8 @@ var libraryConfig = {
     ]
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ]
+    extensions: [ '.tsx', '.ts', '.js' ],
+    modules: [ path.resolve(__dirname, '../webmixer/dist'), "node_modules"]
   },
   output: {
     library: 'webmixer-ui',
@@ -22,7 +23,9 @@ var libraryConfig = {
   },
   externals: {
     webmixer: {
-      amd: 'webmixer'
+      amd: 'webmixer',
+      commonjs: 'webmixer',
+      commonjs2: 'webmixer'
     }
   }
 };

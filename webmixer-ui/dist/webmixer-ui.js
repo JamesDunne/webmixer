@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory(require("webmixer"));
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
+		define(["webmixer"], factory);
 	else if(typeof exports === 'object')
-		exports["webmixer-ui"] = factory();
+		exports["webmixer-ui"] = factory(require("webmixer"));
 	else
-		root["webmixer-ui"] = factory();
-})(this, function() {
+		root["webmixer-ui"] = factory(root[undefined]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -78,18 +78,18 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);
-module.exports = __webpack_require__(2);
+module.exports = __webpack_require__(3);
 
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, !(function webpackMissingModule() { var e = new Error("Cannot find module \"webmixer/util\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, webmixer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     // Define maximum gain at the top of the fader range [0..1]:
-    const faderMaxGain = util_1.dB_to_gain(12);
+    const faderMaxGain = webmixer_1.dB_to_gain(12);
     function gain_to_fader(gain) {
         let fader = Math.pow((6.0 * Math.log(gain) / Math.log(2.0) + 192.0) / 198.0, 8.0);
         return fader;
@@ -98,7 +98,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     function dB_to_fader(dB) {
         if (dB == -Infinity)
             return 0.0;
-        let gain = util_1.dB_to_gain(dB) * 2.0 / faderMaxGain;
+        let gain = webmixer_1.dB_to_gain(dB) * 2.0 / faderMaxGain;
         return gain_to_fader(gain);
     }
     // Define a zero-value on the fader [0..1] scale:
@@ -110,7 +110,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         if (Math.abs(fader - faderZero) < 1e-6)
             return 0;
         let gain = Math.exp(((Math.pow(fader, 1.0 / 8.0) * 198.0) - 192.0) / 6.0 * Math.log(2.0)) * faderMaxGain / 2.0;
-        let dB = util_1.gain_to_dB(gain);
+        let dB = webmixer_1.gain_to_dB(gain);
         return dB;
     }
     function withExactDigits(value, maxDigits) {
@@ -265,9 +265,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(__dirname) {const path = __webpack_require__(3);
+/* WEBPACK VAR INJECTION */(function(__dirname) {const path = __webpack_require__(4);
 
 var libraryConfig = {
   entry: './src/index.ts',
@@ -281,7 +287,8 @@ var libraryConfig = {
     ]
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ]
+    extensions: [ '.tsx', '.ts', '.js' ],
+    modules: [ path.resolve(__dirname, '../webmixer/dist'), "node_modules"]
   },
   output: {
     library: 'webmixer-ui',
@@ -291,7 +298,9 @@ var libraryConfig = {
   },
   externals: {
     webmixer: {
-      amd: 'webmixer'
+      amd: 'webmixer',
+      commonjs: 'webmixer',
+      commonjs2: 'webmixer'
     }
   }
 };
@@ -301,7 +310,7 @@ module.exports = [libraryConfig];
 /* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -529,10 +538,10 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
