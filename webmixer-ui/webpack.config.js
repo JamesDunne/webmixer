@@ -15,10 +15,15 @@ var libraryConfig = {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
   output: {
-    library: 'webmixer',
+    library: 'webmixer-ui',
     libraryTarget: 'umd',
-    filename: 'webmixer.js',
+    filename: 'webmixer-ui.js',
     path: path.resolve(__dirname, 'dist')
+  },
+  externals: {
+    webmixer: {
+      amd: 'webmixer'
+    }
   }
 };
 
