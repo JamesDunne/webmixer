@@ -140,7 +140,230 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0), __webpack_require__(1), __webpack_require__(3), __webpack_require__(4), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1, parameter_1, eq_1, compressor_1, graphiceq_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class EQ {
+        constructor(opts) {
+            this.opts = opts;
+            this.bandNodes = [];
+        }
+        applyOpts(opts) {
+            this.opts = Object.assign(this.opts, opts);
+        }
+        createNodes(ac) {
+            let inputNode = null;
+            let outputNode = null;
+            let bandNodes = [];
+            for (let band of this.opts.bands || []) {
+                let bandNode = ac.createBiquadFilter();
+                bandNodes.push(bandNode);
+                bandNode.type = band.type || "peaking";
+                bandNode.frequency.value = band.freq;
+                bandNode.Q.value = band.q || 0.666667;
+                bandNode.gain.value = band.gain || 0;
+                if (inputNode === null) {
+                    inputNode = bandNode;
+                }
+                else {
+                    outputNode.connect(bandNode);
+                }
+                outputNode = bandNode;
+            }
+            if (this.opts.makeupGain) {
+                this.makeupGainNode = ac.createGain();
+                this.makeupGainNode.gain.value = util_1.dB_to_gain(this.opts.makeupGain);
+                if (outputNode) {
+                    outputNode.connect(this.makeupGainNode);
+                }
+                outputNode = this.makeupGainNode;
+                if (inputNode === null) {
+                    inputNode = outputNode;
+                }
+            }
+            this.inputNode = inputNode;
+            this.outputNode = outputNode;
+            this.bandNodes = bandNodes;
+        }
+        responseCurve(n) {
+            //const n = 52 * 8;
+            let resp = {
+                freqs: new Float32Array(n),
+                mag: new Float32Array(n),
+                phase: new Float32Array(n)
+            };
+            let baseGain = util_1.dB_to_gain(this.opts.makeupGain);
+            for (let i = 0; i < n; i++) {
+                resp.freqs[i] = 20 * Math.pow(1000.0, i / (n - 1));
+                resp.mag[i] = baseGain;
+                resp.phase[i] = 1;
+            }
+            for (let bandNode of this.bandNodes) {
+                let bandMag = new Float32Array(n);
+                let bandPhase = new Float32Array(n);
+                bandNode.getFrequencyResponse(resp.freqs, bandMag, bandPhase);
+                for (let i = 0; i < n; i++) {
+                    resp.mag[i] *= bandMag[i];
+                    resp.phase[i] *= bandPhase[i];
+                }
+            }
+            return resp;
+        }
+    }
+    exports.EQ = EQ;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class GraphicEQ {
+        constructor(opts) {
+            this.opts = opts;
+        }
+        applyOpts(opts) {
+            this.opts = Object.assign(this.opts, opts);
+        }
+        createNodes(ac) {
+            let inputNode = null;
+            let outputNode = null;
+            let bandNodes = [];
+            let bandCount = this.opts.bandCount || 16;
+            if (bandCount < 1) {
+                bandCount = 1;
+            }
+            let bands = this.opts.bands || [];
+            let n = 0;
+            let q = Math.log2(3);
+            for (let gain of bands) {
+                let bandNode = ac.createBiquadFilter();
+                bandNodes.push(bandNode);
+                bandNode.type = "peaking";
+                bandNode.frequency.value = Math.pow(q, n) * 20;
+                // see: http://www.rane.com/note101.html
+                // Q = f / (f * Math.pow(2, 1/6) - f * Math.pow(2, -1/6))
+                bandNode.Q.value = 4.318473046963146;
+                bandNode.gain.value = gain;
+                n++;
+                if (inputNode === null) {
+                    inputNode = bandNode;
+                }
+                else {
+                    outputNode.connect(bandNode);
+                }
+                outputNode = bandNode;
+            }
+            if (this.opts.makeupGain) {
+                this.makeupGainNode = ac.createGain();
+                this.makeupGainNode.gain.value = util_1.dB_to_gain(this.opts.makeupGain);
+                if (outputNode) {
+                    outputNode.connect(this.makeupGainNode);
+                }
+                outputNode = this.makeupGainNode;
+                if (inputNode === null) {
+                    inputNode = outputNode;
+                }
+            }
+            this.inputNode = inputNode;
+            this.outputNode = outputNode;
+            this.bandNodes = bandNodes;
+        }
+    }
+    exports.GraphicEQ = GraphicEQ;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1, parameter_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    class Compressor {
+        constructor(opts) {
+            this.opts = opts;
+            this._threshold = new parameter_1.Parameter(opts.threshold || 0, (value) => {
+                if (!this.compNode)
+                    return;
+                this.compNode.threshold.value = value;
+            });
+            this._ratio = new parameter_1.Parameter(opts.ratio || 0, (value) => {
+                if (!this.compNode)
+                    return;
+                this.compNode.ratio.value = value;
+            });
+            this._knee = new parameter_1.Parameter(opts.knee || 0, (value) => {
+                if (!this.compNode)
+                    return;
+                this.compNode.knee.value = value;
+            });
+            this._attack = new parameter_1.Parameter(opts.attack || 0, (value) => {
+                if (!this.compNode)
+                    return;
+                this.compNode.attack.value = value;
+            });
+            this._release = new parameter_1.Parameter(opts.release || 0, (value) => {
+                if (!this.compNode)
+                    return;
+                this.compNode.release.value = value;
+            });
+            this._makeupGain = new parameter_1.Parameter(opts.makeupGain || 0, (value) => {
+                if (!this.makeupGainNode)
+                    return;
+                this.makeupGainNode.gain.value = util_1.dB_to_gain(value);
+            });
+        }
+        applyOpts(opts) {
+            this.opts = Object.assign(this.opts, opts);
+            this.threshold.value = opts.threshold || this.threshold.value;
+            this.ratio.value = opts.ratio || this.ratio.value;
+            this.knee.value = opts.knee || this.knee.value;
+            this.attack.value = opts.attack || this.attack.value;
+            this.release.value = opts.release || this.release.value;
+            this.makeupGain.value = opts.makeupGain || this.makeupGain.value;
+        }
+        createNodes(ac) {
+            this.compNode = ac.createDynamicsCompressor();
+            this.makeupGainNode = ac.createGain();
+            this.compNode.connect(this.makeupGainNode);
+            this.threshold.applyValue();
+            this.ratio.applyValue();
+            this.knee.applyValue();
+            this.attack.applyValue();
+            this.release.applyValue();
+            this.makeupGain.applyValue();
+        }
+        get inputNode() { return this.compNode; }
+        get outputNode() { return this.makeupGainNode; }
+        get threshold() { return this._threshold; }
+        get ratio() { return this._ratio; }
+        get knee() { return this._knee; }
+        get attack() { return this._attack; }
+        get release() { return this._release; }
+        get makeupGain() { return this._makeupGain; }
+        get gainReduction() {
+            if (!this.compNode)
+                return 0;
+            return this.compNode.reduction;
+        }
+    }
+    exports.Compressor = Compressor;
+}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0), __webpack_require__(1), __webpack_require__(2), __webpack_require__(4), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1, parameter_1, eq_1, compressor_1, graphiceq_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Track {
@@ -285,245 +508,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class EQ {
-        constructor(opts) {
-            this.opts = opts;
-            this.bandNodes = [];
-        }
-        applyOpts(opts) {
-            this.opts = Object.assign(this.opts, opts);
-        }
-        createNodes(ac) {
-            let inputNode = null;
-            let outputNode = null;
-            let bandNodes = [];
-            for (let band of this.opts.bands || []) {
-                let bandNode = ac.createBiquadFilter();
-                bandNodes.push(bandNode);
-                bandNode.type = band.type || "peaking";
-                bandNode.frequency.value = band.freq;
-                bandNode.Q.value = band.q || 0.666667;
-                bandNode.gain.value = band.gain || 0;
-                if (inputNode === null) {
-                    inputNode = bandNode;
-                }
-                else {
-                    outputNode.connect(bandNode);
-                }
-                outputNode = bandNode;
-            }
-            if (this.opts.makeupGain) {
-                this.makeupGainNode = ac.createGain();
-                this.makeupGainNode.gain.value = util_1.dB_to_gain(this.opts.makeupGain);
-                if (outputNode) {
-                    outputNode.connect(this.makeupGainNode);
-                }
-                outputNode = this.makeupGainNode;
-                if (inputNode === null) {
-                    inputNode = outputNode;
-                }
-            }
-            this.inputNode = inputNode;
-            this.outputNode = outputNode;
-            this.bandNodes = bandNodes;
-        }
-        responseCurve(n) {
-            //const n = 52 * 8;
-            let resp = {
-                freqs: new Float32Array(n),
-                mag: new Float32Array(n),
-                phase: new Float32Array(n)
-            };
-            let baseGain = util_1.dB_to_gain(this.opts.makeupGain);
-            for (let i = 0; i < n; i++) {
-                resp.freqs[i] = 20 * Math.pow(1000.0, i / (n - 1));
-                resp.mag[i] = baseGain;
-                resp.phase[i] = 1;
-            }
-            for (let bandNode of this.bandNodes) {
-                let bandMag = new Float32Array(n);
-                let bandPhase = new Float32Array(n);
-                bandNode.getFrequencyResponse(resp.freqs, bandMag, bandPhase);
-                for (let i = 0; i < n; i++) {
-                    resp.mag[i] *= bandMag[i];
-                    resp.phase[i] *= bandPhase[i];
-                }
-            }
-            return resp;
-        }
-    }
-    exports.EQ = EQ;
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1, parameter_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class Compressor {
-        constructor(opts) {
-            this.opts = opts;
-            this._threshold = new parameter_1.Parameter(opts.threshold || 0, (value) => {
-                if (!this.compNode)
-                    return;
-                this.compNode.threshold.value = value;
-            });
-            this._ratio = new parameter_1.Parameter(opts.ratio || 0, (value) => {
-                if (!this.compNode)
-                    return;
-                this.compNode.ratio.value = value;
-            });
-            this._knee = new parameter_1.Parameter(opts.knee || 0, (value) => {
-                if (!this.compNode)
-                    return;
-                this.compNode.knee.value = value;
-            });
-            this._attack = new parameter_1.Parameter(opts.attack || 0, (value) => {
-                if (!this.compNode)
-                    return;
-                this.compNode.attack.value = value;
-            });
-            this._release = new parameter_1.Parameter(opts.release || 0, (value) => {
-                if (!this.compNode)
-                    return;
-                this.compNode.release.value = value;
-            });
-            this._makeupGain = new parameter_1.Parameter(opts.makeupGain || 0, (value) => {
-                if (!this.makeupGainNode)
-                    return;
-                this.makeupGainNode.gain.value = util_1.dB_to_gain(value);
-            });
-        }
-        applyOpts(opts) {
-            this.opts = Object.assign(this.opts, opts);
-            this.threshold.value = opts.threshold || this.threshold.value;
-            this.ratio.value = opts.ratio || this.ratio.value;
-            this.knee.value = opts.knee || this.knee.value;
-            this.attack.value = opts.attack || this.attack.value;
-            this.release.value = opts.release || this.release.value;
-            this.makeupGain.value = opts.makeupGain || this.makeupGain.value;
-        }
-        createNodes(ac) {
-            this.compNode = ac.createDynamicsCompressor();
-            this.makeupGainNode = ac.createGain();
-            this.compNode.connect(this.makeupGainNode);
-            this.threshold.applyValue();
-            this.ratio.applyValue();
-            this.knee.applyValue();
-            this.attack.applyValue();
-            this.release.applyValue();
-            this.makeupGain.applyValue();
-        }
-        get inputNode() { return this.compNode; }
-        get outputNode() { return this.makeupGainNode; }
-        get threshold() { return this._threshold; }
-        get ratio() { return this._ratio; }
-        get knee() { return this._knee; }
-        get attack() { return this._attack; }
-        get release() { return this._release; }
-        get makeupGain() { return this._makeupGain; }
-        get gainReduction() {
-            if (!this.compNode)
-                return 0;
-            return this.compNode.reduction;
-        }
-    }
-    exports.Compressor = Compressor;
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    class GraphicEQ {
-        constructor(opts) {
-            this.opts = opts;
-        }
-        applyOpts(opts) {
-            this.opts = Object.assign(this.opts, opts);
-        }
-        createNodes(ac) {
-            let inputNode = null;
-            let outputNode = null;
-            let bandNodes = [];
-            let bandCount = this.opts.bandCount || 16;
-            if (bandCount < 1) {
-                bandCount = 1;
-            }
-            let bands = this.opts.bands || [];
-            let n = 0;
-            let q = Math.log2(3);
-            for (let gain of bands) {
-                let bandNode = ac.createBiquadFilter();
-                bandNodes.push(bandNode);
-                bandNode.type = "peaking";
-                bandNode.frequency.value = Math.pow(q, n) * 20;
-                // see: http://www.rane.com/note101.html
-                // Q = f / (f * Math.pow(2, 1/6) - f * Math.pow(2, -1/6))
-                bandNode.Q.value = 4.318473046963146;
-                bandNode.gain.value = gain;
-                n++;
-                if (inputNode === null) {
-                    inputNode = bandNode;
-                }
-                else {
-                    outputNode.connect(bandNode);
-                }
-                outputNode = bandNode;
-            }
-            if (this.opts.makeupGain) {
-                this.makeupGainNode = ac.createGain();
-                this.makeupGainNode.gain.value = util_1.dB_to_gain(this.opts.makeupGain);
-                if (outputNode) {
-                    outputNode.connect(this.makeupGainNode);
-                }
-                outputNode = this.makeupGainNode;
-                if (inputNode === null) {
-                    inputNode = outputNode;
-                }
-            }
-            this.inputNode = inputNode;
-            this.outputNode = outputNode;
-            this.bandNodes = bandNodes;
-        }
-    }
-    exports.GraphicEQ = GraphicEQ;
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(7), __webpack_require__(2), __webpack_require__(3), __webpack_require__(5), __webpack_require__(4), __webpack_require__(1), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, mixer_1, track_1, eq_1, graphiceq_1, compressor_1, parameter_1, util_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(0), __webpack_require__(1), __webpack_require__(2), __webpack_require__(3), __webpack_require__(4), __webpack_require__(5), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, util_1, parameter_1, eq_1, graphiceq_1, compressor_1, track_1, mixer_1) {
     "use strict";
-    function __export(m) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.Mixer = mixer_1.Mixer;
-    exports.Track = track_1.Track;
+    exports.dB_to_gain = util_1.dB_to_gain;
+    exports.gain_to_dB = util_1.gain_to_dB;
+    exports.Parameter = parameter_1.Parameter;
     exports.EQ = eq_1.EQ;
     exports.GraphicEQ = graphiceq_1.GraphicEQ;
     exports.Compressor = compressor_1.Compressor;
-    exports.Parameter = parameter_1.Parameter;
-    __export(util_1);
+    exports.Track = track_1.Track;
+    exports.Mixer = mixer_1.Mixer;
 }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
@@ -532,7 +530,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, track_1) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports, __webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports, track_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Mixer {
