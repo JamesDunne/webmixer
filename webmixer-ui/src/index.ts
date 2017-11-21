@@ -115,15 +115,18 @@ export class MixerUI {
 
             // Set data-track attribute:
             const trackNode = node.querySelector("div.track");
+            if (trackNode == null) return;
             trackNode.setAttribute("data-track", track.name);
 
             // Set name label:
             const nameLabel = <HTMLSpanElement>node.querySelector(".label span.name");
-            nameLabel.innerText = track.name;
+            if (nameLabel != null) {
+                nameLabel.innerText = track.name;
+            }
 
             // Calculate EQ response:
             const eqCanvas = <HTMLCanvasElement>node.querySelector(".eq canvas.eq-response");
-            {
+            if (eqCanvas != null) {
                 const n = 52 * 8;
 
                 function y(gain: number): number {
@@ -168,36 +171,46 @@ export class MixerUI {
             }
 
             // Set level label:
-            const levelLabel = <HTMLSpanElement>node.querySelector(".label span.level");
-            levelLabel.innerText = levelFormat(track.level.value);
-            // Click level label to reset to 0:
-            levelLabel.addEventListener("click", faderResetHandler);
+            const levelLabel = <HTMLSpanElement>trackNode.querySelector(".label span.level");
+            if (levelLabel != null) {
+                levelLabel.innerText = levelFormat(track.level.value);
+                // Click level label to reset to 0:
+                levelLabel.addEventListener("click", faderResetHandler);
+            }
 
             // Bind fader events:
             const faderNode = <HTMLInputElement>trackNode.querySelector(".fader input[type=range]");
-            faderNode.min = '0.0';
-            faderNode.max = '1.0';
-            faderNode.valueAsNumber = dB_to_fader(track.level.value);
-            faderNode.addEventListener("dblclick", faderResetHandler);
-            faderNode.addEventListener("input", faderInputHandler);
-            track.level.addChangedEvent((value) => {
-                faderNode.valueAsNumber = dB_to_fader(value);
-                levelLabel.innerText = levelFormat(value);
-            });
+            if (faderNode != null) {
+                faderNode.min = '0.0';
+                faderNode.max = '1.0';
+                faderNode.valueAsNumber = dB_to_fader(track.level.value);
+                faderNode.addEventListener("dblclick", faderResetHandler);
+                faderNode.addEventListener("input", faderInputHandler);
+                if (levelLabel != null) {
+                    track.level.addChangedEvent((value) => {
+                        faderNode.valueAsNumber = dB_to_fader(value);
+                        levelLabel.innerText = levelFormat(value);
+                    });
+                }
+            }
 
-            let muteNode = <HTMLInputElement>trackNode.querySelector(".mute.button input[type=checkbox]");
-            muteNode.checked = track.mute.value;
-            muteNode.addEventListener("change", muteInputHandler);
-            track.mute.addChangedEvent((value) => {
-                muteNode.checked = value;
-            });
+            const muteNode = <HTMLInputElement>trackNode.querySelector(".mute.button input[type=checkbox]");
+            if (muteNode != null) {
+                muteNode.checked = track.mute.value;
+                muteNode.addEventListener("change", muteInputHandler);
+                track.mute.addChangedEvent((value) => {
+                    muteNode.checked = value;
+                });
+            }
 
-            let soloNode = <HTMLInputElement>trackNode.querySelector(".solo.button input[type=checkbox]");
-            soloNode.checked = track.solo.value;
-            soloNode.addEventListener("change", soloInputHandler);
-            track.solo.addChangedEvent((value) => {
-                soloNode.checked = value;
-            });
+            const soloNode = <HTMLInputElement>trackNode.querySelector(".solo.button input[type=checkbox]");
+            if (soloNode != null) {
+                soloNode.checked = track.solo.value;
+                soloNode.addEventListener("change", soloInputHandler);
+                track.solo.addChangedEvent((value) => {
+                    soloNode.checked = value;
+                });
+            }
 
             trackStrip.appendChild(node);
         });
