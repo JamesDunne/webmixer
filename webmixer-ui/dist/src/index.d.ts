@@ -8,5 +8,5 @@ export declare class MixerUI {
     muteInputHandler(e: any): void;
     soloInputHandler(e: any): void;
     faderResetHandler(e: any): void;
-    init(): void;
+    init(trackStrip: Element, trackTemplate: HTMLTemplateElement): void;
 }

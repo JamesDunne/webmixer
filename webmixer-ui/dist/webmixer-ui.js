@@ -163,21 +163,34 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             let track = this.trackFromDescendent(el);
             track.level.value = 0;
         }
-        init() {
+        init(trackStrip, trackTemplate) {
+            if (trackStrip == null) {
+                trackStrip = document.querySelector(".webmixer .trackstrip");
+                if (trackStrip == null) {
+                    console.error("could not find trackstrip div element by selector '.webmixer .trackstrip'");
+                    return;
+                }
+            }
+            // Stamp template per each track:
+            if (trackTemplate == null)
+                trackTemplate = document.getElementById("trackTemplate");
+            if (trackTemplate == null) {
+                console.error("could not find track template element by selector '#trackTemplate'");
+                return;
+            }
             let faderInputHandler = this.faderInputHandler.bind(this);
             let faderResetHandler = this.faderResetHandler.bind(this);
             let muteInputHandler = this.muteInputHandler.bind(this);
             let soloInputHandler = this.soloInputHandler.bind(this);
-            // Stamp template per each track:
-            let trackTemplate = document.getElementById("trackTemplate");
-            let trackStrip = document.querySelector(".webmixer .trackstrip");
             [...this.mixer.tracks, this.mixer.master].forEach(track => {
                 // Clone template:
                 const node = document.importNode(trackTemplate.content, true);
                 // Set data-track attribute:
                 const trackNode = node.querySelector("div.track");
-                if (trackNode == null)
+                if (trackNode == null) {
+                    console.error("could not find track node in template by selector 'div.track'");
                     return;
+                }
                 trackNode.setAttribute("data-track", track.name);
                 // Set name label:
                 const nameLabel = node.querySelector(".label span.name");
