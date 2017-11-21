@@ -13,7 +13,7 @@ var libraryConfig = {
   },
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
-    modules: [ path.resolve(__dirname, '../webmixer/dist'), "node_modules"]
+    modules: ["node_modules"]
   },
   output: {
     library: 'webmixer-ui',
