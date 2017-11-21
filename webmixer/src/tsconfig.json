@@ -3,7 +3,8 @@
         "target": "ES6",
         "sourceMap": true,
         "declaration": true,
-        "module": "amd"
+        "module": "amd",
+        "moduleResolution": "node"
 	},
     "include": [
         "./"
