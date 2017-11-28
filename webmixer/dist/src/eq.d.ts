@@ -8,6 +8,7 @@ export declare class EQ {
     private magResponse;
     private phaseResponse;
     constructor(opts: any);
+    static QfromBandwidth(bw: number): number;
     applyOpts(opts: any): void;
     createNodes(ac: any): void;
     responseCurve(n: number): {

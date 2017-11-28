@@ -17,6 +17,11 @@ export class EQ {
         this.bandNodes = [];
     }
 
+    static QfromBandwidth(bw: number): number {
+	    const bw_2 = Math.pow(2.0, bw);
+	    return Math.sqrt(bw_2) / (bw_2 - 1.0);
+    }
+
     applyOpts(opts) {
         this.opts = Object.assign(this.opts, opts);
     }
@@ -32,7 +37,13 @@ export class EQ {
 
             bandNode.type = band.type || "peaking";
             bandNode.frequency.value = band.freq;
-            bandNode.Q.value = band.q || 0.666667;
+            if (band.q) {
+                bandNode.Q.value = band.q;
+            } else if (band.bw) {
+                bandNode.Q.value = EQ.QfromBandwidth(band.bw);
+            } else {
+                bandNode.Q.value = 0.666667;
+            }
             bandNode.gain.value = band.gain || 0;
 
             if (inputNode === null) {

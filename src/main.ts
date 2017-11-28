@@ -15,6 +15,7 @@ mcSource.channelCountMode = "explicit";
 mcSource.channelInterpretation = "discrete";
 
 let mix = {
+    "source": "13 - Fuel.wav",
     "sourceChannels": 12,
     "master": {
         "graphiceq": {
@@ -50,7 +51,7 @@ let mix = {
                     {"freq":400.000000, "gain":-7.730000, "q":0.804624},
                     {"freq":1885.148165, "gain":-3.720486, "q":1.060028},
                     {"freq":11132.201691, "gain":-2.802494, "q":0.805152},
-                    {"freq":9600, "type": "lowpass"}
+                    {"freq":14000, "type": "lowpass"}
                 ],
                 "makeupGain": 5.8
             },
@@ -91,25 +92,11 @@ let mix = {
         },
         {
             "name": "G:MG",
-            "eq": {
-                "bands": [
-                    {"freq":2325.930000, "gain":-4.171299, "q":2.641279},
-                    {"freq":5000.000000, "gain":5.945587, "q":1.629548, "type":"highshelf"}
-                ],
-                "makeupGain": 3
-            },
             "pan": -0.8,
             "level": -0.75
         },
         {
             "name": "G:JD",
-            "eq": {
-                "bands": [
-                    {"freq":2325.930000, "gain":-4.171299, "q":2.641279},
-                    {"freq":5000.000000, "gain":5.945587, "q":1.629548, "type":"highshelf"}
-                ],
-                "makeupGain": 3
-            },
             "pan": 0.8,
             "level": -0.75
         },
@@ -138,114 +125,113 @@ let mix = {
             "name": "D:Kick",
             "eq": {
                 "bands": [
-                    {"freq":110, "type": "highpass"},
-                    {"freq":133.249144, "gain":-3.972947, "q":1.591894},
-                    {"freq":544.818606, "gain":-15.543725, "q":0.445548},
-                    {"freq":4179.056143, "gain":4.475110, "q":0.666667},
-                    {"freq":11689.377266, "q": 0.919136,  "type": "lowpass"}
+                    {"freq":77.4, "type": "highpass", "bw": 2.0},
+                    {"freq":103.3, "gain":-7.7, "bw": 1.27 },
+                    {"freq":184.4, "gain":-5.4, "bw": 0.32 },
+                    {"freq":422.9, "gain":-12.8, "bw": 3.07},
+                    {"freq":4404.4, "gain": 10.8, "bw": 2.0 }
                 ],
-                "makeupGain": 7.5
+                "makeupGain": 10.6
             },
             "compressor": {
-                "threshold": -34,
-                "ratio": 3.8,
+                "threshold": -23.9,
+                "ratio": 2.3,
                 "knee": 0,
-                "attack": 0.0103,
+                "attack": 0.0193,
                 "release": 0.026,
-                "makeupGain": -3
+                "makeupGain": 6
             },
-            "level": 1.47
+            "level": -2
         },
         {
             "name": "D:Snare",
             "eq": {
                 "bands": [
-                    {"freq":125.1, "type": "highpass"},
-                    {"freq":260.211802, "gain":-3.480312, "q":2.160295},
-                    {"freq":612.205273, "gain":-10.888889, "q":0.553803},
-                    {"freq":6625.783413, "gain":3.733333, "q":0.666667}
+                    {"freq":89.9, "type": "highpass", "bw": 2.0},
+                    {"freq":377.4, "gain":-5.7, "bw":0.17},
+                    {"freq":614.0, "gain":-8.7, "bw":0.14},
+                    {"freq":778.6, "gain":-6.2, "bw":2.43},
+                    {"freq":5419.1, "gain":5.5, "bw":2.0}
                 ],
                 "makeupGain": 7
             },
             "compressor": {
-                "threshold": -36.3,
-                "ratio": 3.3,
-                "knee": 0,
-                "attack": 0.0087,
+                "threshold": -24.5,
+                "ratio": 2.0,
+                "knee": 6,
+                "attack": 0.0147,
                 "release": 0.056,
-                "makeupGain": -4.5
+                "makeupGain": 4
             },
-            "level": -0.62
+            "level": -2
         },
         {
             "name": "D:HighTom",
             "eq": {
                 "bands": [
-                    {"freq":126.736086, "type": "highpass"},
-                    {"freq":340.029120, "gain":-5.889247, "q":3.678489},
-                    {"freq":584.497208, "gain":-11.619048, "q":0.381231},
-                    {"freq":9992.460613, "type": "lowpass"}
+                    {"freq":155.3, "type": "highpass", "bw": 2.0},
+                    {"freq":210.7, "gain":-5.0, "bw": 0.22},
+                    {"freq":464.5, "gain":-9.2, "bw": 2.0},
+                    {"freq":953.4, "gain":-9.7, "bw": 0.16},
+                    {"freq":9640.0, "type": "lowpass", "bw": 2.0}
                 ],
-                "makeupGain": 6.4
+                "makeupGain": 5.9
             },
             "compressor": {
-                "threshold": -27.9,
+                "threshold": -28.5,
                 "ratio": 2.0,
-                "knee": 0,
-                "attack": 0.0096,
+                "knee": 6.0,
+                "attack": 0.0356,
                 "release": 0.052,
-                "makeupGain": -4.5
+                "makeupGain": 2
             },
             "pan": -0.4,
-            "level": -0.8
+            "level": -3
         },
         {
             "name": "D:FloorTom",
             "eq": {
                 "bands": [
-                    {"freq":127.130927, "type": "highpass"},
-                    {"freq":280.321665, "gain":-6.771389, "q":3.123048},
-                    {"freq":486.251757, "gain":-10.666667, "q":0.381231},
-                    {"freq":9224.637955, "type": "lowpass"}
+                    {"freq":176.3, "type": "highpass", "bw": 2.0},
+                    {"freq":179.5, "gain":-9.9, "bw": 0.39},
+                    {"freq":286.7, "gain":-6.3, "bw": 0.16},
+                    {"freq":442.3, "gain":-11.6, "bw": 2.61},
+                    {"freq":11675.6, "type": "lowpass", "bw": 2.0}
                 ],
-                "makeupGain": 6.4
+                "makeupGain": 5.9
             },
             "compressor": {
-                "threshold": -27.9,
+                "threshold": -36.4,
                 "ratio": 2.0,
-                "knee": 0,
-                "attack": 0.0096,
+                "knee": 6.0,
+                "attack": 0.0413,
                 "release": 0.052,
-                "makeupGain": -4.5
+                "makeupGain": 3
             },
-            "pan": 0.6,
-            "level": -0.8
+            "pan": 0.4,
+            "level": -3
         },
         {
             "name": "D:OH",
             "channels": 2,
             "eq": {
                 "bands": [
-                    {"freq":148.939075, "type": "highpass"},
-                    {"freq":405.545780, "gain":-12.566784, "q":0.452873},
-                    {"freq":1838.969275, "gain":-7.406309, "q":1.110336},
-                    {"freq":15481.902444, "type": "lowpass"}
+                    {"freq":159.8, "type": "highpass", "bw": 2.0},
+                    {"freq":534.4, "gain":-11.6, "bw": 2.69},
+                    {"freq":1753.1, "gain":-9.3, "bw": 0.2}
                 ],
-                "makeupGain": 7.8
+                "makeupGain": 0
             },
             "compressor": {
-                "threshold": -36.8,
-                "ratio": 1.8,
-                "knee": 0,
-                "attack": 0.0018,
-                "release": 0.274,
-                "makeupGain": -2.0
+                "threshold": -33.7,
+                "ratio": 10.7,
+                "knee": 6,
+                "attack": 0.0129,
+                "release": 0.204,
+                "makeupGain": 0
             },
-            "level": -14.4
+            "level": -8
         }
-    ],
-    "songs": [
-        "basket-case.opus"
     ]
 };
 
@@ -295,6 +281,6 @@ for (let track of mixer.tracks) {
     merger.connect(track.inputNode);
 }
 
-mcAudio.src = mix.songs[0];
+mcAudio.src = mix.source;
 mcAudio.loop = true;
 //mcAudio.play();
