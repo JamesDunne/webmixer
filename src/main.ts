@@ -104,12 +104,15 @@ let mix = {
             "name": "Bass",
             "eq": {
                 "bands": [
-                    {"freq":44.564004, "type": "highpass"},
-                    {"freq":433.695077, "gain":-12.218957, "q":0.507461},
-                    {"freq":974.520551, "gain":0.262902, "q":0.688007},
-                    {"freq":1902.596919, "type": "lowpass"}
+                    {"freq":49.3, "type": "highpass", "bw": 2.0},
+                    {"freq":438.3, "gain":-9.9, "bw": 2.92 },
+                    {"freq":1899.3, "gain":4.3, "bw": 1.95 },
+                    {"freq":357.9, "gain":-5.0, "bw": 0.11 },
+                    {"freq":4921.6, "gain":-12.5, "bw": 0.29 },
+                    {"freq":923.7, "gain":-6.1, "bw": 0.21 },
+                    {"freq":4904.6, "type": "lowpass", "bw": 2.0 }
                 ],
-                "makeupGain": 3.7
+                "makeupGain": 7.5
             },
             "compressor": {
                 "threshold": -37.5,
@@ -117,9 +120,9 @@ let mix = {
                 "knee": 1.8,
                 "attack": 0.0112,
                 "release": 0.050,
-                "makeupGain": -2
+                "makeupGain": 0
             },
-            "level": -4.5
+            "level": -8
         },
         {
             "name": "D:Kick",
