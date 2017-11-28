@@ -1,5 +1,4 @@
-import { Mixer } from 'webmixer';
-import { Track } from 'webmixer';
+import { Mixer, Track, EQ } from 'webmixer';
 export declare class MixerUI {
     mixer: Mixer;
     constructor(mixer: any);
@@ -10,5 +9,6 @@ export declare class MixerUI {
     soloInputHandler(e: any): void;
     faderResetHandler(e: any): void;
     panResetHandler(e: any): void;
+    renderEQCurve(eq: EQ, eqCanvas: HTMLCanvasElement): void;
     init(trackStrip: Element, trackTemplate: HTMLTemplateElement): void;
 }

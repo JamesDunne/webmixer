@@ -174,6 +174,43 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             let track = this.trackFromDescendent(el);
             track.pan.value = 0;
         }
+        renderEQCurve(eq, eqCanvas) {
+            if (eqCanvas == null)
+                return;
+            const n = 52 * 8;
+            function y(gain) {
+                return 312 - (gain_to_fader(gain) * 312.0 * 0.5);
+            }
+            function x(f) {
+                return Math.log(f / 20.0) / Math.log(1000) * (n - 1);
+            }
+            let resp = eq.responseCurve(n);
+            let ctx = eqCanvas.getContext("2d");
+            ctx.strokeStyle = '#555555';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0, y(1));
+            ctx.lineTo(n, y(1));
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x(20), 0);
+            ctx.lineTo(x(20), 312);
+            ctx.moveTo(x(200), 0);
+            ctx.lineTo(x(200), 312);
+            ctx.moveTo(x(2000), 0);
+            ctx.lineTo(x(2000), 312);
+            ctx.moveTo(x(20000), 0);
+            ctx.lineTo(x(20000), 312);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(-1, y(resp.mag[0]));
+            for (let i = 1; i < n; i++) {
+                ctx.lineTo(i, y(resp.mag[i]));
+            }
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+        }
         init(trackStrip, trackTemplate) {
             if (trackStrip == null) {
                 trackStrip = document.querySelector(".webmixer .trackstrip");
@@ -264,42 +301,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 }
                 // Calculate EQ response:
                 const eqCanvas = node.querySelector(".eq canvas.eq-response");
-                if (eqCanvas != null) {
-                    const n = 52 * 8;
-                    function y(gain) {
-                        return 312 - (gain_to_fader(gain) * 220.0);
-                    }
-                    function x(f) {
-                        return Math.log(f / 20.0) / Math.log(1000) * (n - 1);
-                    }
-                    let eq = track.eq;
-                    let resp = eq.responseCurve(n);
-                    let ctx = eqCanvas.getContext("2d");
-                    ctx.strokeStyle = '#555555';
-                    ctx.lineWidth = 4;
-                    ctx.beginPath();
-                    ctx.moveTo(0, y(1));
-                    ctx.lineTo(n, y(1));
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(x(20), 0);
-                    ctx.lineTo(x(20), 312);
-                    ctx.moveTo(x(200), 0);
-                    ctx.lineTo(x(200), 312);
-                    ctx.moveTo(x(2000), 0);
-                    ctx.lineTo(x(2000), 312);
-                    ctx.moveTo(x(20000), 0);
-                    ctx.lineTo(x(20000), 312);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(-1, y(resp.mag[0]));
-                    for (let i = 1; i < n; i++) {
-                        ctx.lineTo(i, y(resp.mag[i]));
-                    }
-                    ctx.lineWidth = 8;
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.stroke();
-                }
+                this.renderEQCurve(track.eq, eqCanvas);
                 // Append track to track strip:
                 trackStrip.appendChild(node);
             });

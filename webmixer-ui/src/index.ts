@@ -1,6 +1,5 @@
 import { dB_to_gain, gain_to_dB } from 'webmixer';
-import { Mixer } from 'webmixer';
-import { Track } from 'webmixer';
+import { Mixer, Track, EQ } from 'webmixer';
 
 // Define maximum gain at the top of the fader range [0..1]:
 const faderMaxGain = dB_to_gain(12);
@@ -115,6 +114,50 @@ export class MixerUI {
         track.pan.value = 0;
     }
 
+    renderEQCurve(eq: EQ, eqCanvas: HTMLCanvasElement) {
+        if (eqCanvas == null) return;
+        const n = 52 * 8;
+
+        function y(gain: number): number {
+            return 312 - (gain_to_fader(gain) * 312.0 * 0.5);
+        }
+
+        function x(f: number): number {
+            return Math.log(f / 20.0) / Math.log(1000) * (n-1);
+        }
+
+        let resp = eq.responseCurve(n);
+
+        let ctx = eqCanvas.getContext("2d");
+        ctx.strokeStyle = '#555555';
+        ctx.lineWidth = 4;
+
+        ctx.beginPath();
+        ctx.moveTo(0, y(1));
+        ctx.lineTo(n, y(1));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x(20), 0);
+        ctx.lineTo(x(20), 312);
+        ctx.moveTo(x(200), 0);
+        ctx.lineTo(x(200), 312);
+        ctx.moveTo(x(2000), 0);
+        ctx.lineTo(x(2000), 312);
+        ctx.moveTo(x(20000), 0);
+        ctx.lineTo(x(20000), 312);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(-1, y(resp.mag[0]));
+        for (let i = 1; i < n; i++) {
+            ctx.lineTo(i, y(resp.mag[i]));
+        }
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+    }
+
     init(trackStrip: Element, trackTemplate: HTMLTemplateElement) {
         if (trackStrip == null) {
             trackStrip = document.querySelector(".webmixer .trackstrip");
@@ -215,49 +258,7 @@ export class MixerUI {
 
             // Calculate EQ response:
             const eqCanvas = <HTMLCanvasElement>node.querySelector(".eq canvas.eq-response");
-            if (eqCanvas != null) {
-                const n = 52 * 8;
-
-                function y(gain: number): number {
-                    return 312 - (gain_to_fader(gain) * 220.0);
-                }
-
-                function x(f: number): number {
-                    return Math.log(f / 20.0) / Math.log(1000) * (n-1);
-                }
-
-                let eq = track.eq;
-                let resp = eq.responseCurve(n);
-
-                let ctx = eqCanvas.getContext("2d");
-                ctx.strokeStyle = '#555555';
-                ctx.lineWidth = 4;
-
-                ctx.beginPath();
-                ctx.moveTo(0, y(1));
-                ctx.lineTo(n, y(1));
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(x(20), 0);
-                ctx.lineTo(x(20), 312);
-                ctx.moveTo(x(200), 0);
-                ctx.lineTo(x(200), 312);
-                ctx.moveTo(x(2000), 0);
-                ctx.lineTo(x(2000), 312);
-                ctx.moveTo(x(20000), 0);
-                ctx.lineTo(x(20000), 312);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(-1, y(resp.mag[0]));
-                for (let i = 1; i < n; i++) {
-                    ctx.lineTo(i, y(resp.mag[i]));
-                }
-                ctx.lineWidth = 8;
-                ctx.strokeStyle = '#ffffff';
-                ctx.stroke();
-            }
+            this.renderEQCurve(track.eq, eqCanvas);
 
             // Append track to track strip:
             trackStrip.appendChild(node);
