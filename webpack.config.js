@@ -1,7 +1,15 @@
 const path = require('path');
+const webpack = require('webpack');
 
 var siteConfig = {
-  entry: './src/main.ts',
+  devServer: {
+    contentBase: path.resolve(__dirname, "dist"),
+    hot: true,
+    inline: true
+  },
+  entry: {
+    main: './src/main.ts'
+  },
   module: {
     rules: [
       {
@@ -19,7 +27,7 @@ var siteConfig = {
     ]
   },
   output: {
-    filename: 'main.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
   }
 };

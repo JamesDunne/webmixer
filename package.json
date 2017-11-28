@@ -10,10 +10,12 @@
   "devDependencies": {
     "ts-loader": "^3.1.1",
     "typescript": "^2.6.1",
-    "webpack": "^3.8.1"
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.5"
   },
   "scripts": {
     "build": "webpack",
+    "watch": "webpack-dev-server --inline --hot --progress --profile --colors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
